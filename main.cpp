@@ -1,265 +1,197 @@
 #include <SFML/Graphics.hpp>
-#include "map.h"
-#include "view.h"//подключили код с видом камеры
+//#include "map.h"
+#include "view.h"
+#include <iostream>
 #include <sstream>
 #include "mission.h"
-#include <iostream>
+#include "iostream"
+#include "level.h"
+#include <vector>
+#include <list>
+
+#include "TinyXML/tinyxml.h"
 
 using namespace sf;
-
-class Player {
-private: float x, y = 0;
+////////////////////////////////////Общий класс-родитель//////////////////////////
+class Entity {
 public:
-		float w, h, dx, dy, speed;
-		int dir, playerScore, health;//новая переменная, хранящая жизни игрока
-		bool life;//переменная жизнь, логическая
-		String File;
-		Image image;
-		Texture texture;
-		Sprite sprite;
-		Player(String F, float X, float Y, float W, float H) {
-			dir = 0; speed = 0; playerScore = 0; health = 100; dx = 0; dy = 0; // инициализировали переменную жизни в конструкторе
-			life = true;//инициализировали логическую переменную жизни
-		File = F;
-		w = W; h = H;
-		image.loadFromFile("images/" + File);
-		image.createMaskFromColor(Color(41, 33, 59));
+	std::vector<Object> obj;//вектор объектов карты
+	float dx, dy, x, y, speed, moveTimer;
+	int w, h, health;
+	bool life, isMove, onGround;
+	Texture texture;
+	Sprite sprite;
+	String name;
+	Entity(Image& image, String Name, float X, float Y, int W, int H) {
+		x = X; y = Y; w = W; h = H; name = Name; moveTimer = 0;
+		speed = 0; health = 100; dx = 0; dy = 0;
+		life = true; onGround = false; isMove = false;
 		texture.loadFromImage(image);
 		sprite.setTexture(texture);
-		x = X; y = Y;
-		sprite.setTextureRect(IntRect(0, 0, w, h));
+		sprite.setOrigin(w / 2, h / 2);
 	}
-	void update(float time)
-	{
-		switch (dir)
-		{
-		case 0: dx = speed; dy = 0; sprite.setScale(1, 1); break;
-		case 1: dx = -speed; dy = 0; sprite.setScale(-1, 1);  break;
-		case 2: dx = 0; dy = speed; break;
-		case 3: dx = 0; dy = -speed; break;
+
+	FloatRect getRect() {//ф-ция получения прямоугольника. его коорд,размеры (шир,высот).
+		return FloatRect(x, y, w, h);//эта ф-ция нужна для проверки столкновений 
+	}
+};
+////////////////////////////////////////////////////КЛАСС ИГРОКА////////////////////////
+class Player :public Entity {
+public:
+	enum { left, right, up, down, jump, stay } state;
+	int playerScore;
+
+	Player(Image& image, String Name, Level& lev, float X, float Y, int W, int H) :Entity(image, Name, X, Y, W, H) {
+		playerScore = 0; state = stay; obj = lev.GetAllObjects();//инициализируем.получаем все объекты для взаимодействия персонажа с картой
+		if (name == "Player1") {
+			sprite.setTextureRect(IntRect(4, 19, w, h));
 		}
-
-		x += dx * time;
-		y += dy * time;
-
-		speed = 0;
-		sprite.setPosition(x, y);
-		interactionWithMap();
-		if (health <= 0) { life = false; }//если жизней меньше либо равно 0, то умираем и исключаем движение игрока после смерти
 	}
 
-	float getplayercoordinateX() {	//этим методом будем забирать координату Х	
-		return x;
+	void control() {
+		if (Keyboard::isKeyPressed) {
+			if (Keyboard::isKeyPressed(Keyboard::Left)) {
+				state = left; speed = 0.1;
+			}
+			if (Keyboard::isKeyPressed(Keyboard::Right)) {
+				state = right; speed = 0.1;
+			}
+
+			if ((Keyboard::isKeyPressed(Keyboard::Up)) && (onGround)) {
+				state = jump; dy = -0.6; onGround = false;
+			}
+
+			if (Keyboard::isKeyPressed(Keyboard::Down)) {
+				state = down;
+			}
+		}
 	}
-	float getplayercoordinateY() {	//этим методом будем забирать координату Y 	
-		return y;
-	}
-	void interactionWithMap()//ф-ция взаимодействия с картой
+
+
+
+	void checkCollisionWithMap(float Dx, float Dy)
 	{
 
-		for (int i = y / 32; i < (y + h) / 32; i++)//проходимся по тайликам, контактирующим с игроком, то есть по всем квадратикам размера 32*32, которые мы окрашивали в 9 уроке. про условия читайте ниже.
-			for (int j = x / 32; j < (x + w) / 32; j++)//икс делим на 32, тем самым получаем левый квадратик, с которым персонаж соприкасается. (он ведь больше размера 32*32, поэтому может одновременно стоять на нескольких квадратах). А j<(x + w) / 32 - условие ограничения координат по иксу. то есть координата самого правого квадрата, который соприкасается с персонажем. таким образом идем в цикле слева направо по иксу, проходя по от левого квадрата (соприкасающегося с героем), до правого квадрата (соприкасающегося с героем)
+		for (int i = 0; i < obj.size(); i++)//проходимся по объектам
+			if (getRect().intersects(obj[i].rect))//проверяем пересечение игрока с объектом
 			{
-				if (TileMap[i][j] == '0')//если наш квадратик соответствует символу 0 (стена), то проверяем "направление скорости" персонажа:
+				if (obj[i].name == "solid")//если встретили препятствие
 				{
-					if (dy > 0)//если мы шли вниз,
-					{
-						y = i * 32 - h;//то стопорим координату игрек персонажа. сначала получаем координату нашего квадратика на карте(стены) и затем вычитаем из высоты спрайта персонажа.
-					}
-					if (dy < 0)
-					{
-						y = i * 32 + 32;//аналогично с ходьбой вверх. dy<0, значит мы идем вверх (вспоминаем координаты паинта)
-					}
-					if (dx > 0)
-					{
-						x = j * 32 - w;//если идем вправо, то координата Х равна стена (символ 0) минус ширина персонажа
-					}
-					if (dx < 0)
-					{
-						x = j * 32 + 32;//аналогично идем влево
-					}
-				}
-
-				if (TileMap[i][j] == 's') {
-					playerScore++;//если взяли камень, переменная playerScore=playerScore+1;
-					TileMap[i][j] = ' ';
-				}
-				if (TileMap[i][j] == 'f') {
-					health -= 40;//если взяли ядовитейший в мире цветок,то переменная health=health-40;
-					TileMap[i][j] = ' ';//убрали цветок
-				}
-				if (TileMap[i][j] == 'h') {
-					health += 20;//если взяли сердечко,то переменная health=health+20;
-					TileMap[i][j] = ' ';//убрали сердечко
+					if (Dy > 0) { y = obj[i].rect.top - h;  dy = 0; onGround = true; }
+					if (Dy < 0) { y = obj[i].rect.top + obj[i].rect.height;   dy = 0; }
+					if (Dx > 0) { x = obj[i].rect.left - w; }
+					if (Dx < 0) { x = obj[i].rect.left + obj[i].rect.width; }
 				}
 			}
+	}
+
+	void update(float time)
+	{
+		control();
+		switch (state)
+		{
+		case right:dx = speed; break;
+		case left:dx = -speed; break;
+		case up: break;
+		case down: dx = 0; break;
+		case stay: break;
+		}
+		x += dx * time;
+		checkCollisionWithMap(dx, 0);
+		y += dy * time;
+		checkCollisionWithMap(0, dy);
+		sprite.setPosition(x + w / 2, y + h / 2);
+		if (health <= 0) { life = false; }
+		if (!isMove) { speed = 0; }
+		setPlayerCoordinateForView(x, y);
+		if (life) { setPlayerCoordinateForView(x, y); }
+		dy = dy + 0.0015 * time;
+	}
+};
+
+
+
+class Enemy :public Entity {
+public:
+	Enemy(Image& image, String Name, Level& lvl, float X, float Y, int W, int H) :Entity(image, Name, X, Y, W, H) {
+		obj = lvl.GetObjects("solid");//инициализируем.получаем нужные объекты для взаимодействия врага с картой
+		if (name == "EasyEnemy") {
+			sprite.setTextureRect(IntRect(0, 0, w, h));
+			dx = 0.1;
+		}
+	}
+
+	void checkCollisionWithMap(float Dx, float Dy)
+	{
+		for (int i = 0; i < obj.size(); i++)//проходимся по объектам
+			if (getRect().intersects(obj[i].rect))//проверяем пересечение игрока с объектом
+			{
+				//if (obj[i].name == "solid"){//если встретили препятствие (объект с именем solid)
+				if (Dy > 0) { y = obj[i].rect.top - h;  dy = 0; onGround = true; }
+				if (Dy < 0) { y = obj[i].rect.top + obj[i].rect.height;   dy = 0; }
+				if (Dx > 0) { x = obj[i].rect.left - w;  dx = -0.1; sprite.scale(-1, 1); }
+				if (Dx < 0) { x = obj[i].rect.left + obj[i].rect.width; dx = 0.1; sprite.scale(-1, 1); }
+				//}
+			}
+	}
+
+	void update(float time)
+	{
+		if (name == "EasyEnemy") {
+			//moveTimer += time;if (moveTimer>3000){ dx *= -1; moveTimer = 0; }//меняет направление примерно каждые 3 сек
+			checkCollisionWithMap(dx, 0);
+			x += dx * time;
+			sprite.setPosition(x + w / 2, y + h / 2);
+			if (health <= 0) { life = false; }
+		}
 	}
 };
 
 int main()
 {
-	RenderWindow window(sf::VideoMode(640, 480), "SELSOR");
-	view.reset(sf::FloatRect(0, 0, 640, 480));//размер "вида" камеры при создании объекта вида камеры. (потом можем менять как хотим) Что то типа инициализации.
+	RenderWindow window(VideoMode(640, 480), "SELSOR");
+	view.reset(FloatRect(0, 0, 640, 480));
 
+	Level lvl;//создали экземпляр класса уровень
+	lvl.LoadFromFile("map.tmx");//загрузили в него карту, внутри класса с помощью методов он ее обработает.
 
-	Font font;//шрифт 
-	font.loadFromFile("textStyle/18392.otf");//передаем нашему шрифту файл шрифта
-	Text text("", font, 20);//создаем объект текст. закидываем в объект текст строку, шрифт, размер шрифта(в пикселях);//сам объект текст (не строка)
-	text.setFillColor(Color::Black);
+	Image heroImage;
+	heroImage.loadFromFile("images/MilesTailsPrower.gif");
 
-	Image map_image;
-	map_image.loadFromFile("images/map.png");
-	Texture map;
-	map.loadFromImage(map_image);
-	Sprite s_map;
-	s_map.setTexture(map);
+	Image easyEnemyImage;
+	easyEnemyImage.loadFromFile("images/man.png");
+	easyEnemyImage.createMaskFromColor(Color(255, 0, 0));
 
-	Image quest_image;
-	quest_image.loadFromFile("images/missionbg.jpg");
-	quest_image.createMaskFromColor(Color(0, 0, 0));
-	Texture quest_texture;
-	quest_texture.loadFromImage(quest_image);
-	Sprite s_quest;
-	s_quest.setTexture(quest_texture);
-	s_quest.setTextureRect(IntRect(0, 0, 340, 510));  //приведение типов, размеры картинки исходные
-	s_quest.setScale(0.6f, 0.6f);//чуть уменьшили картинку, => размер стал меньше
+	Object player = lvl.GetObject("player");//объект игрока на нашей карте.задаем координаты игроку в начале при помощи него
+	Object easyEnemyObject = lvl.GetObject("easyEnemy");//объект легкого врага на нашей карте.задаем координаты игроку в начале при помощи него
 
-	bool showMissionText = true;//логическая переменная, отвечающая за появление текста миссии на экране
+	Player p(heroImage, "Player1", lvl, player.rect.left, player.rect.top, 40, 30);//передаем координаты прямоугольника player из карты в координаты нашего игрока
+	Enemy easyEnemy(easyEnemyImage, "EasyEnemy", lvl, easyEnemyObject.rect.left, easyEnemyObject.rect.top, 200, 97);//передаем координаты прямоугольника easyEnemy из карты в координаты нашего врага
 
-	Player p("man.png", 250, 250, 40, 70);
-
-
-	float CurrentFrame = 0;
 	Clock clock;
-	Clock gameTimeClock;//переменная игрового времени, будем здесь хранить время игры 
-	int gameTime = 0;//объявили игровое время, инициализировали.
-
-
 	while (window.isOpen())
 	{
 
 		float time = clock.getElapsedTime().asMicroseconds();
 
-		if (p.life) gameTime = gameTimeClock.getElapsedTime().asSeconds(); else { view.move(0.8, 0); }
 		clock.restart();
 		time = time / 800;
-
 
 		Event event;
 		while (window.pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed)
 				window.close();
-
-			if (event.type == Event::KeyPressed)//событие нажатия клавиши
-				if ((event.key.code == Keyboard::Tab)) {//если клавиша ТАБ
-
-
-					switch (showMissionText) {//переключатель, реагирующий на логическую переменную showMissionText
-					case true: {
-						std::ostringstream playerHealthString;//строка здоровья игрока
-						playerHealthString << p.health; //заносим в строку здоровье 
-						std::ostringstream task;//строка текста миссии
-						task << getTextMission(getCurrentMission(p.getplayercoordinateX()));//вызывается функция getTextMission (она возвращает текст миссии), которая принимает в качестве аргумента функцию getCurrentMission(возвращающую номер миссии), а уже эта ф-ция принимает в качестве аргумента функцию p.getplayercoordinateX() (эта ф-ция возвращает Икс координату игрока)
-						text.setString("Здоровье: " + playerHealthString.str() + "\n" + task.str());
-						showMissionText = false;//эта строка позволяет убрать все что мы вывели на экране
-						break;//выходим , чтобы не выполнить условие "false" (которое ниже)
-					}
-					case false: {
-						text.setString("");//если не нажата клавиша таб, то весь этот текст пустой
-						showMissionText = true;// а эта строка позволяет снова нажать клавишу таб и получить вывод на экран
-						break;
-					}
-					}
-				}
-		}
-
-		if (p.life) {
-			///////////////////////////////////////////Управление персонажем с анимацией////////////////////////////////////////////////////////////////////////
-			if (Keyboard::isKeyPressed(Keyboard::Left)) {
-				p.dir = 1; p.speed = 0.1;
-
-				CurrentFrame += 0.005 * time;
-				if (CurrentFrame > 3) CurrentFrame -= 2;
-				p.sprite.setTextureRect(IntRect(120 * int(CurrentFrame), 135, 25, 45));
-				getplayercoordinateforview(p.getplayercoordinateX(), p.getplayercoordinateY());//передаем координаты игрока в функцию управления камерой
-			}
-
-			if (Keyboard::isKeyPressed(Keyboard::Right)) {
-				p.dir = 0; p.speed = 0.1;
-				CurrentFrame += 0.005 * time;
-				if (CurrentFrame > 3) CurrentFrame -= 2;
-				p.sprite.setTextureRect(IntRect(120 * int(CurrentFrame), 135, 25, 45));
-				getplayercoordinateforview(p.getplayercoordinateX(), p.getplayercoordinateY());//передаем координаты игрока в функцию управления камерой
-			}
-
-			if (Keyboard::isKeyPressed(Keyboard::Up)) {
-				p.dir = 3; p.speed = 0.1;
-				CurrentFrame += 0.005 * time;
-				if (CurrentFrame > 3) CurrentFrame -= 3;
-				p.sprite.setTextureRect(IntRect(90 * int(CurrentFrame), 235, 35, 45));
-				getplayercoordinateforview(p.getplayercoordinateX(), p.getplayercoordinateY());//передаем координаты игрока в функцию управления камерой
-
-			}
-
-			if (Keyboard::isKeyPressed(Keyboard::Down)) {
-				p.dir = 2; p.speed = 0.1;
-				CurrentFrame += 0.005 * time;
-				if (CurrentFrame > 3) CurrentFrame -= 3;
-				p.sprite.setTextureRect(IntRect(96 * int(CurrentFrame), 0, 96, 96));
-				getplayercoordinateforview(p.getplayercoordinateX(), p.getplayercoordinateY());//передаем координаты игрока в функцию управления камерой
-
-			}
-			getplayercoordinateforview(p.getplayercoordinateX(), p.getplayercoordinateY());
 		}
 		p.update(time);
-		viewmap(time);//функция скроллинга карты, передаем ей время sfml
-		changeview();//прикалываемся с камерой вида
-		window.setView(view);//"оживляем" камеру в окне sfml
-		window.clear();
+		easyEnemy.update(time);
+		window.setView(view);
+		window.clear(Color(77, 83, 140));
+		lvl.Draw(window);//рисуем новую карту
 
-
-		if ((getCurrentMission(p.getplayercoordinateX())) == 0) { //Если текущая миссия 0, то рисуем карту вот так
-			for (int i = 0; i < HEIGHT_MAP; i++)
-				for (int j = 0; j < WIDTH_MAP; j++)
-				{
-					if (TileMap[i][j] == ' ')  s_map.setTextureRect(IntRect(0, 0, 32, 32));
-					if (TileMap[i][j] == 's')  s_map.setTextureRect(IntRect(32, 0, 32, 32));
-					if ((TileMap[i][j] == '0')) s_map.setTextureRect(IntRect(64, 0, 32, 32));
-					if ((TileMap[i][j] == 'f')) s_map.setTextureRect(IntRect(96, 0, 32, 32));
-					if ((TileMap[i][j] == 'h')) s_map.setTextureRect(IntRect(128, 0, 32, 32));
-					s_map.setPosition(j * 32, i * 32);
-
-					window.draw(s_map);
-				}
-		}
-
-		if ((getCurrentMission(p.getplayercoordinateX())) >= 1) { //Если текущая миссия 1, то рисуем карту вот так
-			for (int i = 0; i < HEIGHT_MAP; i++)
-				for (int j = 0; j < WIDTH_MAP; j++)
-				{
-					if (TileMap[i][j] == ' ')  s_map.setTextureRect(IntRect(64, 0, 32, 32));//для примера поменял местами вывод спрайта для этого символа и..
-					if (TileMap[i][j] == 's')  s_map.setTextureRect(IntRect(32, 0, 32, 32));
-					if ((TileMap[i][j] == '0')) s_map.setTextureRect(IntRect(0, 0, 32, 32));//и для вот этого. логически-игровой смысл их остался таким же
-					if ((TileMap[i][j] == 'f')) s_map.setTextureRect(IntRect(96, 0, 32, 32));
-					if ((TileMap[i][j] == 'h')) s_map.setTextureRect(IntRect(128, 0, 32, 32));
-					s_map.setPosition(j * 32, i * 32);
-
-					window.draw(s_map);
-				}
-		}
-
-		if (!showMissionText) {
-			text.setPosition(view.getCenter().x + 125, view.getCenter().y - 130);//позиция всего этого текстового блока
-			s_quest.setPosition(view.getCenter().x + 115, view.getCenter().y - 130);//позиция фона для блока			
-			window.draw(s_quest); window.draw(text); //рисуем спрайт свитка (фон для текста миссии). а затем и текст. все это завязано на логическую переменную, которая меняет свое состояние от нажатия клавиши ТАБ
-		}
-
+		window.draw(easyEnemy.sprite);
 		window.draw(p.sprite);
-
-
 		window.display();
 	}
-
 	return 0;
 }
