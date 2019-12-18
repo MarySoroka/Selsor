@@ -57,6 +57,8 @@ public:
 
 			if ((Keyboard::isKeyPressed(Keyboard::Up)) && (onGround)) {
 				state = jump; dy = -0.6; onGround = false;
+				std::cout << dy << "\n";
+				std::cout << y << "\n";
 			}
 
 			if (Keyboard::isKeyPressed(Keyboard::Down)) {
