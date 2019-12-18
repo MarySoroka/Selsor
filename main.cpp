@@ -56,9 +56,8 @@ public:
 			}
 
 			if ((Keyboard::isKeyPressed(Keyboard::Up)) && (onGround)) {
+
 				state = jump; dy = -0.6; onGround = false;
-				std::cout << dy << "\n";
-				std::cout << y << "\n";
 			}
 
 			if (Keyboard::isKeyPressed(Keyboard::Down)) {
@@ -168,11 +167,11 @@ public:
 
 int main()
 {
-	RenderWindow window(VideoMode(640, 380), "SELSOR");
-	view.reset(FloatRect(0, 0, 640, 380));
+	RenderWindow window(VideoMode(1500, 800), "SELSOR");
+	view.reset(FloatRect(0, 0, 1500, 800));
 
 	Level lvl;//создали экземпл€р класса уровень
-	lvl.LoadFromFile("map.tmx");//загрузили в него карту, внутри класса с помощью методов он ее обработает.
+	lvl.LoadFromFile("swampMap.tmx");//загрузили в него карту, внутри класса с помощью методов он ее обработает.
 
 	Image heroImage;
 	heroImage.loadFromFile("images/MilesTailsPrower.gif");
@@ -186,7 +185,7 @@ int main()
 
 	Object player = lvl.GetObject("player");//объект игрока на нашей карте.задаем координаты игроку в начале при помощи него
 
-	Player p(heroImage, "Player1", lvl, player.rect.left, player.rect.top, 40, 30);//передаем координаты пр€моугольника player из карты в координаты нашего игрока
+	Player p(heroImage, "Player1", lvl, player.rect.left, player.rect.top, 50, 150);//передаем координаты пр€моугольника player из карты в координаты нашего игрока
 
 	std::list<Entity*>  entities;//создаю список, сюда буду кидать объекты.например врагов.
 	std::list<Entity*>::iterator it;//итератор чтобы проходить по эл-там списка
