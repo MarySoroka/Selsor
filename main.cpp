@@ -15,14 +15,14 @@ public:
 	std::vector<Object> obj;//вектор объектов карты
 	float dx, dy, x, y, speed, moveTimer;
 	int w, h, health;
-	bool life, isMove, onGround;
+	bool life, isMove, onGround, isFast;
 	Texture texture;
 	Sprite sprite;
 	String name;
 	Entity(Image& image, String Name, float X, float Y, int W, int H) {
 		x = X; y = Y; w = W; h = H; name = Name; moveTimer = 0;
 		speed = 0; health = 100; dx = 0; dy = 0;
-		life = true; onGround = false; isMove = false;
+		life = true; onGround = false; isMove = false; isFast = true;
 		texture.loadFromImage(image);
 		sprite.setTexture(texture);
 		sprite.setOrigin(w / 2, h / 2);
@@ -63,6 +63,9 @@ public:
 			if (Keyboard::isKeyPressed(Keyboard::Down)) {
 				state = down;
 			}
+			if (!isFast) {
+				speed = 0.05;
+			}
 		}
 	}
 
@@ -80,6 +83,15 @@ public:
 					if (Dy < 0) { y = obj[i].rect.top + obj[i].rect.height;   dy = 0; }
 					if (Dx > 0) { x = obj[i].rect.left - w; }
 					if (Dx < 0) { x = obj[i].rect.left + obj[i].rect.width; }
+					isFast = true;
+				}
+				if (obj[i].name == "swamp")//если встретили препятствие
+				{
+					if (Dy > 0) { y = obj[i].rect.top - h;  dy = 0; onGround = true; }
+					if (Dy < 0) { y = obj[i].rect.top + obj[i].rect.height;   dy = 0; }
+					if (Dx > 0) { x = obj[i].rect.left - w; }
+					if (Dx < 0) { x = obj[i].rect.left + obj[i].rect.width; }
+					isFast = false;
 				}
 			}
 	}
@@ -167,8 +179,8 @@ public:
 
 int main()
 {
-	RenderWindow window(VideoMode(1500, 800), "SELSOR");
-	view.reset(FloatRect(0, 0, 1500, 800));
+	RenderWindow window(VideoMode(800,640), "SELSOR");
+	view.reset(FloatRect(0, 0, 800,680));
 
 	Level lvl;//создали экземпляр класса уровень
 	lvl.LoadFromFile("swampMap.tmx");//загрузили в него карту, внутри класса с помощью методов он ее обработает.
@@ -181,18 +193,18 @@ int main()
 	easyEnemyImage.createMaskFromColor(Color(255, 0, 0));
 
 	Image movePlatformImage;
-	movePlatformImage.loadFromFile("images/movingPlatform.png");
+	movePlatformImage.loadFromFile("images/MovingPlatform.png");
 
-	Object player = lvl.GetObject("player");//объект игрока на нашей карте.задаем координаты игроку в начале при помощи него
+	Object player = lvl.GetObject("player");
 
-	Player p(heroImage, "Player1", lvl, player.rect.left, player.rect.top, 50, 150);//передаем координаты прямоугольника player из карты в координаты нашего игрока
+	Player p(heroImage, "Player1", lvl, player.rect.left, player.rect.top, 40, 30);
+	std::vector<Object> e = lvl.GetObjects("easyEnemy");//все объекты врага на tmx карте хранятся в этом векторе
 
 	std::list<Entity*>  entities;//создаю список, сюда буду кидать объекты.например врагов.
 	std::list<Entity*>::iterator it;//итератор чтобы проходить по эл-там списка
 	std::list<Entity*>::iterator it2;//второй итератор.для взаимодействия между объектами списка
 
-	std::vector<Object> e = lvl.GetObjects("easyEnemy");//все объекты врага на tmx карте хранятся в этом векторе
-
+	
 	for (int i = 0; i < e.size(); i++){//проходимся по элементам этого вектора(а именно по врагам)
 		entities.push_back(new Enemy(easyEnemyImage, "easyEnemy", lvl, e[i].rect.left, e[i].rect.top, 40, 65));//и закидываем в список всех наших врагов с карты
 	    e[i].rect.left;//коорд Х
