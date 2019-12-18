@@ -56,7 +56,12 @@ public:
 			}
 
 			if ((Keyboard::isKeyPressed(Keyboard::Up)) && (onGround)) {
+<<<<<<< HEAD
 				state = jump; dy = -1.2; onGround = false;
+=======
+
+				state = jump; dy = -0.6; onGround = false;
+>>>>>>> 9f440487941dfc7997a29d0daf76791492146e31
 			}
 
 			if (Keyboard::isKeyPressed(Keyboard::Down)) {
