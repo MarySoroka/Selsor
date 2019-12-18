@@ -49,25 +49,25 @@ public:
 	void control() {
 		if (Keyboard::isKeyPressed) {
 			if (Keyboard::isKeyPressed(Keyboard::Left)) {
-				state = left; speed = 0.1;
+				state = left; speed = 0.2;
 			}
 			if (Keyboard::isKeyPressed(Keyboard::Right)) {
-				state = right; speed = 0.1;
+				state = right; speed = 0.2;
 			}
 
 			if ((Keyboard::isKeyPressed(Keyboard::Up)) && (onGround)) {
 
-				state = jump; dy = -0.6; onGround = false;
-			}
+				state = jump; dy = -1.2; onGround = false;
 
-			if (Keyboard::isKeyPressed(Keyboard::Down)) {
-				state = down;
-			}
-			if (!isFast) {
-				speed = 0.05;
+				if (Keyboard::isKeyPressed(Keyboard::Down)) {
+					state = down;
+				}
+				if (!isFast) {
+					speed = 0.05;
+				}
 			}
 		}
-	}
+	};
 
 
 
@@ -179,6 +179,7 @@ public:
 
 int main()
 {
+
 	RenderWindow window(VideoMode(800,640), "SELSOR");
 	view.reset(FloatRect(0, 0, 800,680));
 
@@ -197,8 +198,10 @@ int main()
 
 	Object player = lvl.GetObject("player");
 
+
 	Player p(heroImage, "Player1", lvl, player.rect.left, player.rect.top, 40, 30);
 	std::vector<Object> e = lvl.GetObjects("easyEnemy");//все объекты врага на tmx карте хранятся в этом векторе
+
 
 	std::list<Entity*>  entities;//создаю список, сюда буду кидать объекты.например врагов.
 	std::list<Entity*>::iterator it;//итератор чтобы проходить по эл-там списка
