@@ -257,7 +257,7 @@ void menu(RenderWindow& window) {
 	menuTexture2.loadFromFile("images/222.png");
 	menuTexture3.loadFromFile("images/333.png");
 	aboutTexture.loadFromFile("images/about.png");
-	menuBackground.loadFromFile("images/Penguins.jpg");
+	menuBackground.loadFromFile("images/game_background_4.png");
 	Sprite menu1(menuTexture1), menu2(menuTexture2), menu3(menuTexture3), about(aboutTexture), menuBg(menuBackground);
 	bool isMenu = 1;
 	int menuNum = 0;
@@ -319,7 +319,7 @@ int main()
 
 
 	SoundBuffer shootBuffer;//создаём буфер для звука
-	shootBuffer.loadFromFile("sound/shoot.ogg");//загружаем в него звук
+	shootBuffer.loadFromFile("sound/power.ogg");//загружаем в него звук
 	Sound shoot(shootBuffer);//создаем звук и загружаем в него звук из буфера
 	
 	Music music;//создаем объект музыки
