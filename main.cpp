@@ -70,6 +70,7 @@ public:
 				state = jump; dy = -0.9; onGround = false;
 				if (!isFast) {
 					speed = 0.05;
+					dy = -0.3;
 				}
 			}
 
@@ -297,7 +298,7 @@ int main()
 	menu(window);//вызов меню
     view.reset(sf::FloatRect(0, 0, 1376, 768));
 	Level lvl;//создали экземпл€р класса уровень
-	lvl.LoadFromFile("map/swampMap.tmx");//загрузили в него карту, внутри класса с помощью методов он ее обработает.
+	lvl.LoadFromFile("swampMap.tmx");//загрузили в него карту, внутри класса с помощью методов он ее обработает.
 
 	Image heroImage;
 	heroImage.loadFromFile("images/MilesTailsPrower.gif");
