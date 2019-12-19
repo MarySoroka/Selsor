@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<<<<<<< HEAD
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="60" height="30" tilewidth="37" tileheight="37" nextobjectid="29">
-=======
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="80" height="40" tilewidth="37" tileheight="37" nextobjectid="49">
->>>>>>> d94952384ec3fe0146bba9d74bf4e61ab2d27b50
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="80" height="40" tilewidth="37" tileheight="37" nextobjectid="56">
  <tileset firstgid="1" name="SwampTiles" tilewidth="37" tileheight="37">
   <image source="imageMap/SwampTiles.png" width="1788" height="855"/>
  </tileset>
@@ -2559,8 +2555,6 @@
    <tile gid="661"/>
    <tile gid="662"/>
    <tile gid="663"/>
-<<<<<<< HEAD
-=======
    <tile gid="664"/>
    <tile gid="665"/>
    <tile gid="666"/>
@@ -3805,7 +3799,6 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
->>>>>>> d94952384ec3fe0146bba9d74bf4e61ab2d27b50
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -3986,13 +3979,6 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-<<<<<<< HEAD
-  </data>
- </layer>
- <layer name="Background" width="60" height="30">
-  <data>
-=======
->>>>>>> d94952384ec3fe0146bba9d74bf4e61ab2d27b50
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -12129,8 +12115,6 @@
    <tile gid="1066"/>
    <tile gid="1067"/>
    <tile gid="1068"/>
-<<<<<<< HEAD
-=======
    <tile gid="1059"/>
    <tile gid="1060"/>
    <tile gid="1061"/>
@@ -12396,44 +12380,19 @@
    <tile gid="1057"/>
    <tile gid="1057"/>
    <tile gid="1058"/>
->>>>>>> d94952384ec3fe0146bba9d74bf4e61ab2d27b50
+   <tile gid="1059"/>
+   <tile gid="1057"/>
+   <tile gid="1057"/>
+   <tile gid="1058"/>
    <tile gid="1059"/>
    <tile gid="1060"/>
    <tile gid="1061"/>
    <tile gid="1062"/>
    <tile gid="1063"/>
-   <tile gid="1064"/>
-   <tile gid="1065"/>
-   <tile gid="1066"/>
-   <tile gid="1067"/>
-   <tile gid="1068"/>
-   <tile gid="1068"/>
-   <tile gid="1068"/>
-   <tile gid="1068"/>
-   <tile gid="1068"/>
-   <tile gid="1068"/>
-   <tile gid="1068"/>
-   <tile gid="1068"/>
-   <tile gid="1068"/>
-   <tile gid="1068"/>
-   <tile gid="1068"/>
-   <tile gid="1068"/>
-   <tile gid="1068"/>
-   <tile gid="1068"/>
-   <tile gid="1068"/>
-   <tile gid="1068"/>
-   <tile gid="1068"/>
-   <tile gid="1068"/>
-   <tile gid="1059"/>
-   <tile gid="1060"/>
-   <tile gid="1061"/>
-   <tile gid="1062"/>
-   <tile gid="1063"/>
-   <tile gid="1064"/>
-   <tile gid="1065"/>
-   <tile gid="1066"/>
-   <tile gid="1067"/>
-   <tile gid="1068"/>
+   <tile gid="1057"/>
+   <tile gid="1057"/>
+   <tile gid="1057"/>
+   <tile gid="1057"/>
    <tile gid="1057"/>
    <tile gid="1057"/>
    <tile gid="1057"/>
@@ -12448,9 +12407,6 @@
    <tile gid="1062"/>
    <tile gid="1063"/>
    <tile gid="1064"/>
-<<<<<<< HEAD
-   <tile gid="1065"/>
-=======
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -12681,7 +12637,6 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
->>>>>>> d94952384ec3fe0146bba9d74bf4e61ab2d27b50
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -19107,13 +19062,6 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-<<<<<<< HEAD
-   <tile gid="626"/>
-   <tile gid="627"/>
-   <tile gid="628"/>
-   <tile gid="629"/>
-=======
->>>>>>> d94952384ec3fe0146bba9d74bf4e61ab2d27b50
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -19160,26 +19108,6 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-<<<<<<< HEAD
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-=======
->>>>>>> d94952384ec3fe0146bba9d74bf4e61ab2d27b50
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -19300,32 +19228,18 @@
   </data>
  </layer>
  <objectgroup name="collision">
-<<<<<<< HEAD
-  <object id="1" name="solid" x="2" y="934" width="344" height="66"/>
-  <object id="5" name="swamp" x="344.909" y="952.394" width="568" height="42.3333"/>
-  <object id="7" name="swamp" x="1419.33" y="957.152" width="617.152" height="40"/>
-  <object id="8" name="easyEnemy" x="459.758" y="527.364" width="49" height="142"/>
-  <object id="9" name="player" x="482.727" y="815.061" width="80" height="122"/>
-  <object id="10" name="movingPlatform" x="380" y="670" width="204.333" height="32"/>
-  <object id="14" name="solid" x="669.333" y="786.667" width="127.394" height="74.6667"/>
-  <object id="15" name="solid" x="973.333" y="532" width="145.333" height="64"/>
-  <object id="25" name="solid" x="1791.49" y="82.9091" width="45.333" height="873.091"/>
-  <object id="26" name="solid" x="228.849" y="57.3939" width="45.333" height="873.091"/>
-  <object id="27" name="solid" x="914.227" y="938.515" width="505.061" height="57.3636"/>
-  <object id="28" name="solid" x="2038.14" y="924.985" width="180.727" height="73.0303"/>
-=======
   <object id="1" name="solid" x="372" y="1119" width="344" height="66"/>
-  <object id="5" name="solid" x="1296" y="1118" width="496" height="57"/>
+  <object id="5" name="solid" x="1294.67" y="1118" width="496" height="57"/>
   <object id="7" name="solid" x="2408" y="1120" width="253" height="46"/>
-  <object id="8" name="easyEnemy" x="454" y="976" width="49" height="142"/>
-  <object id="9" name="player" x="1480" y="994" width="80" height="122"/>
+  <object id="8" name="easyEnemy" x="992.333" y="1092.33" width="38.3333" height="47.3333"/>
+  <object id="9" name="player" x="1080.67" y="929" width="42.6667" height="40.6667"/>
   <object id="10" name="movingPlatform" x="750" y="855" width="204.333" height="32"/>
   <object id="14" name="solid" x="1039.33" y="971.667" width="121.333" height="74.6667"/>
   <object id="15" name="solid" x="1343.33" y="717" width="145.333" height="64"/>
   <object id="25" name="solid" x="370" y="185" width="20" height="1104"/>
   <object id="26" name="solid" x="387.333" y="183.667" width="1609.33" height="38.6667"/>
   <object id="29" name="solid" x="1995.33" y="185" width="602.667" height="28"/>
-  <object id="31" name="solid" x="2567.33" y="185" width="21.3333" height="1108"/>
+  <object id="31" name="solid" x="2543.09" y="188.03" width="45.5757" height="1108"/>
   <object id="34" name="solid" x="519.333" y="602.333" width="517.333" height="62.6667"/>
   <object id="35" name="solid" x="1002" y="526.333" width="80" height="101.333"/>
   <object id="36" name="solid" x="1082" y="525" width="110.667" height="69.3333"/>
@@ -19341,6 +19255,11 @@
   <object id="46" name="solid" x="2482" y="521" width="48" height="228"/>
   <object id="47" name="solid" x="2406" y="602.333" width="92" height="146.667"/>
   <object id="48" name="solid" x="2332.67" y="674.333" width="80" height="76"/>
->>>>>>> d94952384ec3fe0146bba9d74bf4e61ab2d27b50
+  <object id="49" name="swamp" x="720.667" y="1139.67" width="572" height="36"/>
+  <object id="50" name="swamp" x="1795" y="1138" width="610" height="36"/>
+  <object id="51" name="solid" x="405.909" y="228.576" width="52.0303" height="881.364"/>
+  <object id="52" name="movingPlatform" x="1161.47" y="862.788" width="204.333" height="32"/>
+  <object id="53" name="movingPlatform" x="1609.95" y="723.394" width="204.333" height="32"/>
+  <object id="55" name="easyEnemy" x="2084" y="1079.33" width="50.6663" height="54.6667"/>
  </objectgroup>
 </map>
