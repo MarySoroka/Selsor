@@ -313,7 +313,9 @@ int main()
 	BulletImage.loadFromFile("images/bullet.png");//загрузили картинку в объект изображени€
 	BulletImage.createMaskFromColor(Color(0, 0, 0));
 
-	LifeBar lifeBarPlayer;//экземпл€р класса полоски здоровь€
+	Bar lifeBarPlayer("images/HealthBar/1.png",202,667);//экземпл€р класса полоски здоровь€
+	Bar magicBarPlayer("images/MagicBar/1.png", 202, 667);//экземпл€р класса полоски здоровь€
+
 
 	SoundBuffer shootBuffer;//создаЄм буфер дл€ звука
 	shootBuffer.loadFromFile("sound/shoot.ogg");//загружаем в него звук
@@ -435,6 +437,8 @@ int main()
  
 		}
 		lifeBarPlayer.update(100);
+		magicBarPlayer.update(100);
+
 		p.update(time);
 		window.setView(view);
 		window.clear(Color(77,83,140));
@@ -444,7 +448,9 @@ int main()
 		for (it = entities.begin(); it != entities.end(); it++){
 			window.draw((*it)->sprite); 
 		}
-		lifeBarPlayer.draw(window);//рисуем полоску здоровь€
+		lifeBarPlayer.draw(window,0);//рисуем полоску здоровь€
+		magicBarPlayer.draw(window,40);
+
 		//window.draw(easyEnemy.sprite);//старый вариант рисовани€ одного врага
 		window.draw(p.sprite);
 		window.display();
