@@ -31,12 +31,14 @@ struct Layer//слои
 class Level//главный класс - уровень
 {
 public:
+	int levelNumber;//номер уровня
 	bool LoadFromFile(std::string filename);//возвращает false если не получилось загрузить
 	Object GetObject(std::string name);
 	std::vector<Object> GetObjects(std::string name);//выдаем объект в наш уровень
 	std::vector<Object> GetAllObjects();//выдаем все объекты в наш уровень
 	void Draw(sf::RenderWindow& window);//рисуем в окно
 	sf::Vector2i GetTileSize();//получаем размер тайла
+
 
 private:
 	int width, height, tileWidth, tileHeight;//в tmx файле width height в начале,затем размер тайла
@@ -45,6 +47,8 @@ private:
 	sf::Texture tilesetImage;//текстура карты
 	std::vector<Object> objects;//массив типа Объекты, который мы создали
 	std::vector<Layer> layers;
+
+
 };
 
 ///////////////////////////////////////

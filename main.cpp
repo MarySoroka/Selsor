@@ -5,31 +5,20 @@
 #include "mission.h"
 #include "iostream"
 #include "level.h"
+#include "menu.h"
 #include <vector>
 #include <list>
 #include "TinyXML/tinyxml.h"
-#include "LifeBar.h"
+#include "Bar.h"
+#include "game.h"
 
-using namespace sf;
-////////////////////////////////////Общий класс-родитель//////////////////////////
-class Entity {
-public:
-	std::vector<Object> obj;//вектор объектов карты
-	float dx, dy, x, y, speed, moveTimer;
-	int w, h, health;
-	bool life, isMove, onGround, isFast;
-	Texture texture;
-	Sprite sprite;
-	String name;
-	Entity(Image& image, String Name, float X, float Y, int W, int H) {
-		x = X; y = Y; w = W; h = H; name = Name; moveTimer = 0;
-		speed = 0; health = 100; dx = 0; dy = 0;
-		life = true; onGround = false; isMove = false; isFast = true;
-		texture.loadFromImage(image);
-		sprite.setTexture(texture);
-		sprite.setOrigin(w / 2, h / 2);
-	}
 
+<<<<<<< HEAD
+void gameRunning(RenderWindow& window, int& numberLevel) {//ф-ция перезагружает игру , если это необходимо
+	if (startGame(window, numberLevel)) { numberLevel++; gameRunning(window, numberLevel); }//принимает с какого уровня начать игру
+}
+
+=======
 	FloatRect getRect() {//ф-ция получения прямоугольника. его коорд,размеры (шир,высот).
 		return FloatRect(x, y, w, h);//эта ф-ция нужна для проверки столкновений 
 	}
@@ -327,134 +316,12 @@ int main()
 	music.play();//воспроизводим музыку
 	music.setLoop(true);
 	music.setVolume(15);
-
-	Object player = lvl.GetObject("player");
-
-
-	Player p(heroImage, "Player1", lvl, player.rect.left, player.rect.top, 40, 30);
-	std::vector<Object> e = lvl.GetObjects("easyEnemy");//все объекты врага на tmx карте хранятся в этом векторе
+>>>>>>> bbafb1b08a405a74045bbd987fb4082dfa461d61
 
 
-	std::list<Entity*>  entities;//создаю список, сюда буду кидать объекты.например врагов.
-	std::list<Entity*>::iterator it;//итератор чтобы проходить по эл-там списка
-	std::list<Entity*>::iterator it2;//второй итератор.для взаимодействия между объектами списка
-
-	
-	for (int i = 0; i < e.size(); i++){//проходимся по элементам этого вектора(а именно по врагам)
-		entities.push_back(new Enemy(easyEnemyImage, "easyEnemy", lvl, e[i].rect.left, e[i].rect.top, 40, 65));//и закидываем в список всех наших врагов с карты
-	    e[i].rect.left;//коорд Х
-		e[i].rect.top;//коорд Y
-	}
-
-	e = lvl.GetObjects("movingPlatform");//забираем все платформы в вектор 
-
-	for (int i = 0; i < e.size(); i++)
-		entities.push_back(new MovingPlatform(movePlatformImage, "movingPlatform", lvl, e[i].rect.left, e[i].rect.top, 95, 22));//закидываем платформу в список.передаем изображение имя уровень координаты появления (взяли из tmx карты), а так же размеры
-	       
-	Clock clock;
-	while (window.isOpen())
-	{
-
-		float time = clock.getElapsedTime().asMicroseconds();
-
-		clock.restart();
-		time = time / 800;
-
-		Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == sf::Event::Closed)
-				window.close();
-			if (p.isShoot == true) { 
-				p.isShoot = false; 
-				entities.push_back(new Bullet(BulletImage, "Bullet", lvl, p.x, p.y, 16, 16, p.state)); 
-				shoot.play();
-			}//если выстрелили, то появляется пуля. enum передаем как int 
-
-		}
-		for (it = entities.begin(); it != entities.end();)//говорим что проходимся от начала до конца
-		{
-			Entity *b = *it;//для удобства, чтобы не писать (*it)->
-			b->update(time);//вызываем ф-цию update для всех объектов (по сути для тех, кто жив)
-			if (b->life == false)	{ it = entities.erase(it); delete b; }// если этот объект мертв, то удаляем его
-			else it++;//и идем курсором (итератором) к след объекту. так делаем со всеми объектами списка
-		}
- 
- 
- 
-		for (it = entities.begin(); it != entities.end(); it++)//проходимся по эл-там списка
-		{
-			if (((*it)->name == "movingPlatform") && ((*it)->getRect().intersects(p.getRect())))//если игрок столкнулся с объектом списка и имя этого объекта movingplatform
-			{
-				Entity *movPlat = *it;
-				if ((p.dy>0) || (p.onGround == false))//при этом игрок находится в состоянии после прыжка, т.е падает вниз
-				if (p.y + p.h<movPlat->y + movPlat->h)//если игрок находится выше платформы, т.е это его ноги минимум (тк мы уже проверяли что он столкнулся с платформой)
-				{
-					p.y = movPlat->y - p.h + 3; p.x += movPlat->dx*time; p.dy = 0; p.onGround = true; // то выталкиваем игрока так, чтобы он как бы стоял на платформе
-				}
-			}
-			
-			if ((*it)->getRect().intersects(p.getRect()))
-			{
-				if ((*it)->name == "easyEnemy"){//и при этом имя объекта EasyEnemy,то..
- 
-					////////выталкивание врага
-					if ((*it)->dx>0)//если враг идет вправо
-					{
-						std::cout << "(*it)->x" << (*it)->x << "\n";//коорд игрока
-						std::cout << "p.x" << p.x << "\n\n";//коорд врага
- 
-						(*it)->x = p.x - (*it)->w; //отталкиваем его от игрока влево (впритык)
-						(*it)->dx = 0;//останавливаем
-						
-						std::cout << "new (*it)->x" << (*it)->x << "\n";//новая коорд врага
-						std::cout << "new p.x" << p.x << "\n\n";//новая коорд игрока (останется прежней)
-					}
-					if ((*it)->dx < 0)//если враг идет влево
-					{
-						(*it)->x = p.x + p.w; //аналогично - отталкиваем вправо
-						(*it)->dx = 0;//останавливаем
-					}
-					///////выталкивание игрока
-					if (p.dx < 0) { p.x = (*it)->x + (*it)->w;}//если столкнулись с врагом и игрок идет влево то выталкиваем игрока
-					if (p.dx > 0) { p.x = (*it)->x - p.w;}//если столкнулись с врагом и игрок идет вправо то выталкиваем игрока
-				}			
- 
-				
-				
-			}
- 
-			for (it2 = entities.begin(); it2 != entities.end(); it2++)
-			{
-				if ((*it)->getRect() != (*it2)->getRect())//при этом это должны быть разные прямоугольники
-				if (((*it)->getRect().intersects((*it2)->getRect())) && ((*it)->name == "EasyEnemy") && ((*it2)->name == "EasyEnemy"))//если столкнулись два объекта и они враги
-				{
-					(*it)->dx *= -1;//меняем направление движения врага
-					(*it)->sprite.scale(-1, 1);//отражаем спрайт по горизонтали
-				}
-			}
-			
- 
- 
-		}
-		lifeBarPlayer.update(100);
-		magicBarPlayer.update(100);
-
-		p.update(time);
-		window.setView(view);
-		window.clear(Color(77,83,140));
-		lvl.Draw(window);
- 
- 
-		for (it = entities.begin(); it != entities.end(); it++){
-			window.draw((*it)->sprite); 
-		}
-		lifeBarPlayer.draw(window,0);//рисуем полоску здоровья
-		magicBarPlayer.draw(window,40);
-
-		//window.draw(easyEnemy.sprite);//старый вариант рисования одного врага
-		window.draw(p.sprite);
-		window.display();
-	}
-	return 0;
+int main(){
+	RenderWindow window(VideoMode(1376, 768), "SELSOR");
+	int numOfCurrLev = 1;
+	gameRunning(window,numOfCurrLev);
+   return 0;
 }

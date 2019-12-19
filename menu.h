@@ -1,5 +1,9 @@
-#include <SFML/Graphics.hpp>
+#ifndef MENU_H
+#define MENU_H
 
+
+#include <SFML/Graphics.hpp>
+using namespace sf;
 
 void menu(RenderWindow& window) {
 	Texture menuTexture1, menuTexture2, menuTexture3, aboutTexture, menuBackground;
@@ -15,6 +19,8 @@ void menu(RenderWindow& window) {
 	menu2.setPosition(100, 90);
 	menu3.setPosition(100, 150);
 	menuBg.setPosition(345, 0);
+
+
 	//////////////////////////////лемч///////////////////
 	while (isMenu)
 	{
@@ -40,3 +46,4 @@ void menu(RenderWindow& window) {
 	}
 	////////////////////////////////////////////////////
 }
+#endif  
