@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "view.h"
 #include <iostream>
 #include "mission.h"
@@ -7,6 +8,7 @@
 #include <vector>
 #include <list>
 #include "TinyXML/tinyxml.h"
+#include "LifeBar.h"
 
 using namespace sf;
 ////////////////////////////////////ќбщий класс-родитель//////////////////////////
@@ -269,6 +271,17 @@ int main()
 	BulletImage.loadFromFile("images/bullet.png");//загрузили картинку в объект изображени€
 	BulletImage.createMaskFromColor(Color(0, 0, 0));
 
+	LifeBar lifeBarPlayer;//экземпл€р класса полоски здоровь€
+
+	SoundBuffer shootBuffer;//создаЄм буфер дл€ звука
+	shootBuffer.loadFromFile("sound/shoot.ogg");//загружаем в него звук
+	Sound shoot(shootBuffer);//создаем звук и загружаем в него звук из буфера
+	
+	Music music;//создаем объект музыки
+	music.openFromFile("sound/background.ogg");//загружаем файл
+	music.play();//воспроизводим музыку
+	music.setLoop(true);
+
 	Object player = lvl.GetObject("player");
 
 
@@ -289,7 +302,9 @@ int main()
 
 	e = lvl.GetObjects("movingPlatform");//забираем все платформы в вектор 
 
-	for (int i = 0; i < e.size(); i++) entities.push_back(new MovingPlatform(movePlatformImage, "movingPlatform", lvl, e[i].rect.left, e[i].rect.top, 95, 22));//закидываем платформу в список.передаем изображение им€ уровень координаты по€влени€ (вз€ли из tmx карты), а так же размеры
+	for (int i = 0; i < e.size(); i++)
+		entities.push_back(new MovingPlatform(movePlatformImage, "movingPlatform", lvl, e[i].rect.left, e[i].rect.top, 95, 22));//закидываем платформу в список.передаем изображение им€ уровень координаты по€влени€ (вз€ли из tmx карты), а так же размеры
+	       
 	Clock clock;
 	while (window.isOpen())
 	{
@@ -307,6 +322,7 @@ int main()
 			if (p.isShoot == true) { 
 				p.isShoot = false; 
 				entities.push_back(new Bullet(BulletImage, "Bullet", lvl, p.x, p.y, 16, 16, p.state)); 
+				shoot.play();
 			}//если выстрелили, то по€вл€етс€ пул€. enum передаем как int 
 
 		}
@@ -375,7 +391,7 @@ int main()
  
  
 		}
- 
+		lifeBarPlayer.update(100);
 		p.update(time);
 		window.setView(view);
 		window.clear(Color(77,83,140));
@@ -385,6 +401,7 @@ int main()
 		for (it = entities.begin(); it != entities.end(); it++){
 			window.draw((*it)->sprite); 
 		}
+		lifeBarPlayer.draw(window);//рисуем полоску здоровь€
 		//window.draw(easyEnemy.sprite);//старый вариант рисовани€ одного врага
 		window.draw(p.sprite);
 		window.display();
