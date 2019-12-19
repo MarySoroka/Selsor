@@ -1,3 +1,7 @@
+#ifndef VIEW_H
+#define VIEW_H
+
+
 #include <SFML/Graphics.hpp>
 using namespace sf;
 
@@ -10,3 +14,4 @@ void setPlayerCoordinateForView(float x, float y) {
 	if (y > 1060) tempY = 1060;//нижнюю стороню.для новой карты
 	view.setCenter(tempX, tempY);
 }
+#endif  

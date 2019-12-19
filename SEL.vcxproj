@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bar.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="TinyXML\tinystr.cpp" />
     <ClCompile Include="TinyXML\tinyxml.cpp" />
@@ -146,10 +147,11 @@
     <ClCompile Include="TinyXML\tinyxmlparser.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bar.h" />
+    <ClInclude Include="Bullet.h" />
+    <ClInclude Include="game.h" />
     <ClInclude Include="level.h" />
-    <ClInclude Include="lifebar.h" />
     <ClInclude Include="main.h" />
-    <ClInclude Include="map.h" />
     <ClInclude Include="menu.h" />
     <ClInclude Include="mission.h" />
     <ClInclude Include="TinyXML\tinystr.h" />
