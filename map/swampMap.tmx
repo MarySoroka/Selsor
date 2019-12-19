@@ -25231,7 +25231,7 @@
    <tile gid="0"/>
   </data>
  </layer>
- <objectgroup name="collision" visible="0">
+ <objectgroup name="collision">
   <object id="1" name="solid" x="372" y="1304" width="344" height="66"/>
   <object id="5" name="solid" x="1294.67" y="1303" width="496" height="57"/>
   <object id="7" name="solid" x="2408" y="1305" width="253" height="46"/>
