@@ -40,7 +40,7 @@ public:
 class Player :public Entity {
 public:
 	enum { left, right, up, down, jump, stay, right_Top } state;
-	int playerScore;
+	int playerScore, magic, power;
 	bool isShoot;
 
 
@@ -49,6 +49,8 @@ public:
 		if (name == "Player1") {
 			sprite.setTextureRect(IntRect(4, 19, w, h));
 		}
+		magic = 20;
+		power = 0;
 	}
 
 	void control() {
@@ -117,6 +119,18 @@ public:
 					if (Dx < 0) { x = obj[i].rect.left + obj[i].rect.width; }
 					isFast = false;
 				}
+				if (obj[i].name == "magicF")//если встретили препятствие
+				{
+					magic += 10;
+				}
+				if (obj[i].name == "healthF")//если встретили препятствие
+				{
+					health += 10;
+				}
+				if (obj[i].name == "powerF")//если встретили препятствие
+				{
+					power += 10;
+				}
 			}
 	}
 
@@ -145,7 +159,41 @@ public:
 
 
 };
-
+class magicFlowers :public Entity {//класс цветов
+public:
+	magicFlowers(Image& image, String Name, Level& lvl, float X, float Y, int W, int H) :Entity(image, Name, X, Y, W, H) {
+		obj = lvl.GetObjects("magicF");//инициализируем .получаем нужные объекты для взаимодействия пули с картой
+		x = X;
+		y = Y;
+		speed = 0;
+		life = true;
+	};
+	void update(float time) { if (health <= 0) { life = false; } };
+};
+class powerFlowers :public Entity {//класс цветов
+public:
+	powerFlowers(Image& image, String Name, Level& lvl, float X, float Y, int W, int H) :Entity(image, Name, X, Y, W, H) {
+		obj = lvl.GetObjects("powerF");//инициализируем .получаем нужные объекты для взаимодействия пули с картой
+		x = X;
+		y = Y;
+		speed = 0;
+		life = true;
+	};
+	void update(float time) { if (health <= 0) { life = false; } };
+};
+class healthFlowers :public Entity {//класс цветов
+public:
+	healthFlowers(Image& image, String Name, Level& lvl, float X, float Y, int W, int H) :Entity(image, Name, X, Y, W, H) {
+		obj = lvl.GetObjects("healthF");//инициализируем .получаем нужные объекты для взаимодействия пули с картой
+		x = X;
+		y = Y;
+		speed = 0;
+		w = h = 16;
+		life = true;
+		sprite.setScale(0.1f,0.1f);
+	};
+	void update(float time) { if (health <= 0) { life = false; }};
+};
 class Bullet :public Entity {//класс пули
 public:
 	int direction;//направление пули
@@ -158,6 +206,7 @@ public:
 		speed = 0.8;
 		w = h = 16;
 		life = true;
+		sprite.setScale(0.1f, 0.1f);
 		//выше инициализация в конструкторе
 	}
 
@@ -252,7 +301,7 @@ public:
 };
 void changeLevel(Level& lvl, int& numberLevel) {
 	if (numberLevel == 1) { lvl.LoadFromFile("map/swampMap.tmx"); }
-	if (numberLevel == 2) { lvl.LoadFromFile("map/map.tmx"); }
+	if (numberLevel == 2) { lvl.LoadFromFile("map/lakeMap.tmx"); }
 	if (numberLevel == 3) { lvl.LoadFromFile("map3.tmx"); }
 }
 
@@ -271,6 +320,13 @@ bool startGame(RenderWindow& window, int& numberLevel) {
 
 		Image movePlatformImage;
 		movePlatformImage.loadFromFile("images/MovingPlatform.png");
+
+		Image magicFlowersImage;
+		movePlatformImage.loadFromFile("images/magicF.png");
+		Image healthFlowersImage;
+		movePlatformImage.loadFromFile("images/healthF.png");
+		Image powerFlowersImage;
+		movePlatformImage.loadFromFile("images/powerF.png");
 
 		Image BulletImage;//изображение для пули
 		BulletImage.loadFromFile("images/bullet.png");//загрузили картинку в объект изображения
@@ -313,6 +369,15 @@ bool startGame(RenderWindow& window, int& numberLevel) {
 		for (int i = 0; i < e.size(); i++)
 			entities.push_back(new MovingPlatform(movePlatformImage, "movingPlatform", lvl, e[i].rect.left, e[i].rect.top, 95, 22));//закидываем платформу в список.передаем изображение имя уровень координаты появления (взяли из tmx карты), а так же размеры
 
+		for (int i = 0; i < e.size(); i++)
+			entities.push_back(new magicFlowers(magicFlowersImage, "magicF", lvl, e[i].rect.left, e[i].rect.top, 880, 968));//закидываем платформу в список.передаем изображение имя уровень координаты появления (взяли из tmx карты), а так же размеры
+
+		for (int i = 0; i < e.size(); i++)
+			entities.push_back(new powerFlowers(powerFlowersImage, "powerF", lvl, e[i].rect.left, e[i].rect.top, 95, 22));//закидываем платформу в список.передаем изображение имя уровень координаты появления (взяли из tmx карты), а так же размеры
+
+		for (int i = 0; i < e.size(); i++)
+			entities.push_back(new healthFlowers(healthFlowersImage, "helthF", lvl, e[i].rect.left, e[i].rect.top, 95, 22));//закидываем платформу в список.передаем изображение имя уровень координаты появления (взяли из tmx карты), а так же размеры
+
 		Clock clock;
 		while (window.isOpen())
 		{
@@ -329,7 +394,7 @@ bool startGame(RenderWindow& window, int& numberLevel) {
 					window.close();
 				if (p.isShoot == true) {
 					p.isShoot = false;
-					entities.push_back(new Bullet(BulletImage, "Bullet", lvl, p.x, p.y, 16, 16, p.state));
+					entities.push_back(new Bullet(BulletImage, "bullet", lvl, p.x, p.y, 16, 16, p.state));
 					shoot.play();
 				}//если выстрелили, то появляется пуля. enum передаем как int 
 
@@ -389,7 +454,7 @@ bool startGame(RenderWindow& window, int& numberLevel) {
 				for (it2 = entities.begin(); it2 != entities.end(); it2++)
 				{
 					if ((*it)->getRect() != (*it2)->getRect())//при этом это должны быть разные прямоугольники
-						if (((*it)->getRect().intersects((*it2)->getRect())) && ((*it)->name == "EasyEnemy") && ((*it2)->name == "EasyEnemy"))//если столкнулись два объекта и они враги
+						if (((*it)->getRect().intersects((*it2)->getRect())) && ((*it)->name == "easyEnemy") && ((*it2)->name == "easyEnemy"))//если столкнулись два объекта и они враги
 						{
 							(*it)->dx *= -1;//меняем направление движения врага
 							(*it)->sprite.scale(-1, 1);//отражаем спрайт по горизонтали
