@@ -20,7 +20,7 @@ public:
 	int shift;
 	Bar(String name, float h, float w);
 	void update(int k);
-	void draw(RenderWindow& window, int shift);
+	void draw(RenderWindow& window, int shift, int k);
 
 };
 

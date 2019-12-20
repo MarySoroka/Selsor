@@ -18,16 +18,20 @@ void Bar::update(int k)// k-текущее здоровье
 {
 	if (k > 0)
 		if (k < max)
-			bar.setSize(Vector2f(10, (max - k) * 70 / max));//если не отрицательно и при этом меньше максимума, то устанавливаем новое значение (новый размер) для черного прямоугольника
+			bar.setSize(Vector2f( (max-k)*1.1,20 ));//если не отрицательно и при этом меньше максимума, то устанавливаем новое значение (новый размер) для черного прямоугольника
+	//bar.setPosition();
 }
 
-void Bar::draw(RenderWindow& window, int shift)
+void Bar::draw(RenderWindow& window, int shift,int k )
 {
 	Vector2f center = window.getView().getCenter();
 	Vector2f size = window.getView().getSize();
-	s.setPosition(center.x - size.x / 2 + 10, center.y - size.y / 2 + 10 + shift);//позиция на экране
-	bar.setPosition(center.x - size.x / 2 + 14, center.y - size.y / 2 + 14);
-
+	if (k > 0) {
+		if (k < max) {
+			s.setPosition(center.x - size.x / 2 + 10, center.y - size.y / 2 + 10 + shift);//позиция на экране
+			bar.setPosition(center.x - size.x / 2 + (90 - ((50 - k) * 1.1)), center.y - size.y / 2 + 25 + shift);
+		}
+	}
 	window.draw(s);//сначала рисуем полоску здоровья
 	window.draw(bar);//поверх неё уже черный прямоугольник, он как бы покрывает её
 }
