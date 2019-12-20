@@ -42,26 +42,35 @@ public:
 	int playerScore;
 	bool isShoot;
 	int power, magic;
-
+	float CurrentFrame = 0;
 	Player(Image& image, String Name, Level& lev, float X, float Y, int W, int H) :Entity(image, Name, X, Y, W, H) {
 		playerScore = 0; state = stay; obj = lev.GetAllObjects();//��������������.�������� ��� ������� ��� �������������� ��������� � ������
 		if (name == "Player1") {
 			sprite.setTextureRect(IntRect(4, 19, w, h));
+			sprite.setScale(1.5f,1.5f);
 		}
 		health = 50;
 		power = 0;
 		magic = 50;
 	}
 
-	void control() {
+	void control(float time) {
 		if (Keyboard::isKeyPressed) {
 			if (Keyboard::isKeyPressed(Keyboard::Left)) {
+				if (CurrentFrame > 3) CurrentFrame -= 2; //проходимся по кадрам с первого по третий включительно. если пришли к третьему кадру - откидываемся назад.
+				sprite.setTextureRect(IntRect(35 * int(CurrentFrame), 20, 40, 60)); //проходимся по координатам Х. получается 96,96*2,96*3 и опять 96
+				sprite.move(-0.1 * time, 0);
+				sprite.setScale(-1.5f,1.5f);
 				state = left; speed = 0.2;
 				if (!isFast) {
 					speed = 0.05;
 				}
 			}
 			if (Keyboard::isKeyPressed(Keyboard::Right)) {
+				if (CurrentFrame > 3) CurrentFrame -= 2; //проходимся по кадрам с первого по третий включительно. если пришли к третьему кадру - откидываемся назад.
+				sprite.setTextureRect(IntRect(35* int(CurrentFrame), 20, 40, 60)); //проходимся по координатам Х. получается 96,96*2,96*3 и опять 96
+				sprite.move(-0.1 * time, 0);
+				sprite.setScale(1.5f, 1.5f);
 				state = right; speed = 0.2;
 				if (!isFast) {
 					speed = 0.05;
@@ -69,7 +78,10 @@ public:
 			}
 
 			if ((Keyboard::isKeyPressed(Keyboard::Up)) && (onGround)) {
-
+				if (CurrentFrame > 3) CurrentFrame -= 2; //проходимся по кадрам с первого по третий включительно. если пришли к третьему кадру - откидываемся назад.
+				sprite.setTextureRect(IntRect(35 * int(CurrentFrame), 20, 40, 60)); //проходимся по координатам Х. получается 96,96*2,96*3 и опять 96
+				sprite.move(-0.1 * time, 0);
+				sprite.setScale(-1.5f, 1.5f);
 				state = jump; dy = -0.9; onGround = false;
 				if (!isFast) {
 					speed = 0.05;
@@ -77,6 +89,10 @@ public:
 			}
 
 			if (Keyboard::isKeyPressed(Keyboard::Down)) {
+				if (CurrentFrame > 3) CurrentFrame -= 2; //проходимся по кадрам с первого по третий включительно. если пришли к третьему кадру - откидываемся назад.
+				sprite.setTextureRect(IntRect(35 * int(CurrentFrame), 20, 40, 60)); //проходимся по координатам Х. получается 96,96*2,96*3 и опять 96
+				sprite.move(-0.1 * time, 0);
+				sprite.setScale(-1.5f, 1.5f);
 				state = down;
 				if (!isFast) {
 					speed = 0.05;
@@ -119,27 +135,15 @@ public:
 					if (Dx < 0) { x = obj[i].rect.left + obj[i].rect.width; }
 					isFast = false;
 				}
-				if (obj[i].name == "magicF")//���� ��������� �����������
-				{
-					magic+=10;
-				}
-				if (obj[i].name == "powerF")//���� ��������� �����������
-				{
-					power++;
-				}
-				if (obj[i].name == "healthF")//���� ��������� �����������
-				{
-					health += 20;
-				}
+
 			}
 	}
-
 	void update(float time)
 	{
-		control();
+		control(time);
 		switch (state)
 		{
-		case right:dx = speed; break;
+		case right: {dx = speed; break; }
 		case left:dx = -speed; break;
 		case up: break;
 		case down: dx = 0; break;
@@ -228,18 +232,20 @@ public:
 
 class Enemy :public Entity {
 public:
+	float CurrentFrame = 0;
 	Enemy(Image& image, String Name, Level& lvl, float X, float Y, int W, int H) :Entity(image, Name, X, Y, W, H) {
 		obj = lvl.GetObjects("solid");//��������������.�������� ������ ������� ��� �������������� ����� � ������
 		if (name == "easyEnemy") {
 			sprite.setTextureRect(IntRect(0, 0, w, h));
+			sprite.setScale(-2.0f,2.0f);
 			dx = 0.1;
 			health = 100;
 		}
 	}
 
-	void checkCollisionWithMap(float Dx, float Dy)
+	void checkCollisionWithMap(float time,float Dx, float Dy)
 	{
-		for (int i = 0; i < obj.size(); i++)
+		for (int i = 0; i < obj.size(); i++){
 			if (getRect().intersects(obj[i].rect))
 			{
 				if (obj[i].name == "solid")//���� ��������� �����������
@@ -250,14 +256,20 @@ public:
 					if (Dx < 0) { x = obj[i].rect.left + obj[i].rect.width; dx = 0.1; sprite.scale(-1, 1); }
 				}
 			}
+			
+		}
 	}
 
 
 	void update(float time)
 	{
+		CurrentFrame += 0.005 * time;
 		if (name == "easyEnemy") {
-			//moveTimer += time;if (moveTimer>3000){ dx *= -1; moveTimer = 0; }//������ ����������� �������� ������ 3 ���(�������������� ������ ����� �����������)
-			checkCollisionWithMap(dx, 0);
+			
+			checkCollisionWithMap(time,dx, 0);
+			if (CurrentFrame > 7) CurrentFrame -= 7; //проходимся по кадрам с первого по третий включительно. если пришли к третьему кадру - откидываемся назад.
+			sprite.setTextureRect(IntRect(64 * int(CurrentFrame), 20, 64, 60)); //проходимся по координатам Х. получается 96,96*2,96*3 и опять 96
+			sprite.move(-0.1 * time, 0);
 			x += dx * time;
 			sprite.setPosition(x + w / 2, y + h / 2);
 			if (health <= 0) { life = false; }
@@ -269,8 +281,7 @@ class magicFlowers :public Entity {//класс цветов
 public:
 	magicFlowers(Image& image, String Name, Level& lvl, float X, float Y, int W, int H) :Entity(image, Name, X, Y, W, H) {
 		sprite.setTextureRect(IntRect(0, 0, W, H));//������������� 
-		sprite.setScale(0.2f,0.2f);
-		sprite.setPosition(x + (w*0.2f) / 2-10, y + (h*0.2f)/2-20);//�������� ������� ����
+		sprite.setPosition(x + (w) / 2, y + (h)/2);//�������� ������� ����
 
 	}
 
@@ -282,9 +293,8 @@ public:
 class powerFlowers :public Entity {//класс цветов
 public:
 	powerFlowers(Image& image, String Name, Level& lvl, float X, float Y, int W, int H) :Entity(image, Name, X, Y, W, H) {
-		sprite.setTextureRect(IntRect(0, 0, W, H));//������������� 
-		sprite.setScale(0.1f, 0.1f);
-		sprite.setPosition(x + (w * 0.1f) / 2-10, y + (h * 0.1f) / 2-20);//�������� ������� ����
+		sprite.setTextureRect(IntRect(0, 0, W, H));//�������������
+		sprite.setPosition(x + w / 2, y + h / 2);//�������� ������� ����
 
 	};
 	void update(float time) { if (health <= 0) { life = false; } };
@@ -293,8 +303,7 @@ class healthFlowers :public Entity {//класс цветов
 public:
 	healthFlowers(Image& image, String Name, Level& lvl, float X, float Y, int W, int H) :Entity(image, Name, X, Y, W, H) {
 		sprite.setTextureRect(IntRect(0, 0, W, H));//������������� 
-		sprite.setScale(0.1f, 0.1f);
-		sprite.setPosition(x + (w * 0.1f) / 2-10, y + (h * 0.1f) / 2-20);//�������� ������� ����
+		sprite.setPosition(x + w / 2, y + h  / 2);//�������� ������� ����
 
 	};
 	void update(float time) { if (health <= 0) { life = false; } };
@@ -315,10 +324,10 @@ bool startGame(RenderWindow& window, int& numberLevel) {
 	changeLevel(lvl, numberLevel);//для загрузки карты для нужного уровня
 
 	Image heroImage;
-	heroImage.loadFromFile("images/MilesTailsPrower.gif");
+	heroImage.loadFromFile("images/girlCharacter.png");
 
 	Image easyEnemyImage;
-	easyEnemyImage.loadFromFile("images/man.png");
+	easyEnemyImage.loadFromFile("images/enemies/swampGhost/ghost-idle.png");
 	easyEnemyImage.createMaskFromColor(Color(255, 0, 0));
 
 	Image movePlatformImage;
@@ -355,7 +364,7 @@ bool startGame(RenderWindow& window, int& numberLevel) {
 	Object player = lvl.GetObject("player");
 
 
-	Player p(heroImage, "Player1", lvl, player.rect.left, player.rect.top, 40, 30);
+	Player p(heroImage, "Player1", lvl, player.rect.left, player.rect.top, 60,60);
 	std::vector<Object> e = lvl.GetObjects("easyEnemy");//��� ������� ����� �� tmx ����� �������� � ���� �������
 	std::list<Entity*>  entities;//������ ������, ���� ���� ������ �������.�������� ������.
 	std::list<Entity*>::iterator it;//�������� ����� ��������� �� ��-��� ������
@@ -363,30 +372,26 @@ bool startGame(RenderWindow& window, int& numberLevel) {
 
 
 	for (int i = 0; i < e.size(); i++) {//���������� �� ��������� ����� �������(� ������ �� ������)
-		entities.push_back(new Enemy(easyEnemyImage, "easyEnemy", lvl, e[i].rect.left, e[i].rect.top, 40, 65));//� ���������� � ������ ���� ����� ������ � �����
+		entities.push_back(new Enemy(easyEnemyImage, "easyEnemy", lvl, e[i].rect.left, e[i].rect.top, 40, 80));//� ���������� � ������ ���� ����� ������ � �����
 		e[i].rect.left;//����� �
 		e[i].rect.top;//����� Y
 	}
 
 	e = lvl.GetObjects("movingPlatform");//�������� ��� ��������� � ������ 
-
 	for (int i = 0; i < e.size(); i++)
 		entities.push_back(new MovingPlatform(movePlatformImage, "movingPlatform", lvl, e[i].rect.left, e[i].rect.top, 95, 22));//���������� ��������� � ������.�������� ����������� ��� ������� ���������� ��������� (����� �� tmx �����), � ��� �� �������
 
 	e = lvl.GetObjects("magicF");//�������� ��� ��������� � ������ 
-
 	for (int i = 0; i < e.size(); i++)
-		entities.push_back(new magicFlowers(magicFImage, "magicF", lvl, e[i].rect.left, e[i].rect.top, 310, 500));//���������� ��������� � ������.�������� ����������� ��� ������� ���������� ��������� (����� �� tmx �����), � ��� �� �������
+		entities.push_back(new magicFlowers(magicFImage, "magicF", lvl, e[i].rect.left, e[i].rect.top, 31, 50));//���������� ��������� � ������.�������� ����������� ��� ������� ���������� ��������� (����� �� tmx �����), � ��� �� �������
 
 	e = lvl.GetObjects("healthF");//�������� ��� ��������� � ������ 
-
 	for (int i = 0; i < e.size(); i++)
-		entities.push_back(new healthFlowers(healthFImage, "healthF", lvl, e[i].rect.left, e[i].rect.top, 880, 968));//���������� ��������� � ������.�������� ����������� ��� ������� ���������� ��������� (����� �� tmx �����), � ��� �� �������
+		entities.push_back(new healthFlowers(healthFImage, "healthF", lvl, e[i].rect.left, e[i].rect.top, 75, 101));//���������� ��������� � ������.�������� ����������� ��� ������� ���������� ��������� (����� �� tmx �����), � ��� �� �������
 
 	e = lvl.GetObjects("powerF");//�������� ��� ��������� � ������ 
-
 	for (int i = 0; i < e.size(); i++)
-		entities.push_back(new powerFlowers(powerFImage, "powerF", lvl, e[i].rect.left, e[i].rect.top, 900, 1000));//���������� ��������� � ������.�������� ����������� ��� ������� ���������� ��������� (����� �� tmx �����), � ��� �� �������
+		entities.push_back(new powerFlowers(powerFImage, "powerF", lvl, e[i].rect.left, e[i].rect.top, 303, 327));//���������� ��������� � ������.�������� ����������� ��� ������� ���������� ��������� (����� �� tmx �����), � ��� �� �������
 
 	Clock clock;
 	while (window.isOpen())
@@ -455,15 +460,18 @@ bool startGame(RenderWindow& window, int& numberLevel) {
 			}
 			if (((*it)->getRect().intersects(p.getRect())) && ((*it)->name == "magicF"))
 			{
-			
+				p.magic += 10;
+				(*it)->life = false;
 			}
 			if (((*it)->getRect().intersects(p.getRect())) && ((*it)->name == "healthF"))
 			{
-
+				p.health += 10;
+				(*it)->life = false;
 			}
 			if (((*it)->getRect().intersects(p.getRect())) && ((*it)->name == "powerF"))
 			{
-
+				p.power += 20;
+				(*it)->life = false;
 			}
 			for (it2 = entities.begin(); it2 != entities.end(); it2++)
 			{
@@ -485,9 +493,11 @@ bool startGame(RenderWindow& window, int& numberLevel) {
 		if (Keyboard::isKeyPressed(Keyboard::Tab)) { return true; }//если таб, то перезагружаем игру
 		if (Keyboard::isKeyPressed(Keyboard::Escape)) { return false; }//если эскейп, то выходим из игры
 
-
-
+		p.CurrentFrame += 0.005 * time;
 		p.update(time);
+
+		
+
 		for (it = entities.begin(); it != entities.end();)//������� ��� ���������� �� ������ �� �����
 		{
 			Entity* b = *it;//��� ��������, ����� �� ������ (*it)->
