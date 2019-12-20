@@ -339,6 +339,7 @@ bool startGame(RenderWindow& window, int& numberLevel) {
 
 	Bar lifeBarPlayer("images/HealthBar/1.png", 202, 667);//��������� ������ ������� ��������
 	Bar magicBarPlayer("images/MagicBar/1.png", 202, 667);//��������� ������ ������� ��������
+	Bar powerBarPlayer("images/FlowerBar/7.png", 202, 667);//��������� ������ ������� ��������
 
 
 	SoundBuffer shootBuffer;//������ ����� ��� �����
@@ -477,9 +478,9 @@ bool startGame(RenderWindow& window, int& numberLevel) {
 
 
 		}
-		lifeBarPlayer.update(p.health);
-		magicBarPlayer.update(p.magic);
-
+		lifeBarPlayer.update(p.health,1.1,0);
+		magicBarPlayer.update(p.magic,1.1,0);
+		powerBarPlayer.update(p.power,0.92,0);
 		if (Keyboard::isKeyPressed(Keyboard::T)) { lvl.levelNumber++; return true; }
 		if (Keyboard::isKeyPressed(Keyboard::Tab)) { return true; }//если таб, то перезагружаем игру
 		if (Keyboard::isKeyPressed(Keyboard::Escape)) { return false; }//если эскейп, то выходим из игры
@@ -505,8 +506,9 @@ bool startGame(RenderWindow& window, int& numberLevel) {
 		for (it = entities.begin(); it != entities.end(); it++) {
 			window.draw((*it)->sprite);
 		}
-		lifeBarPlayer.draw(window, 0,p.health+10);//������ ������� ��������
-		magicBarPlayer.draw(window, 40, p.magic+10);
+		lifeBarPlayer.draw(window, 0,p.health+10,1.1);//������ ������� ��������
+		magicBarPlayer.draw(window, 40, p.magic+10,1.1);
+		powerBarPlayer.draw(window, 80, p.power,0.92);
 
 		//window.draw(easyEnemy.sprite);//������ ������� ��������� ������ �����
 		window.draw(p.sprite);
