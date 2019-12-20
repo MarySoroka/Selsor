@@ -319,7 +319,7 @@ bool startGame(RenderWindow& window, int& numberLevel) {
 		easyEnemyImage.createMaskFromColor(Color(255, 0, 0));
 
 		Image movePlatformImage;
-		movePlatformImage.loadFromFile("images/MovingPlatform.png");
+		movePlatformImage.loadFromFile("images/man.png");
 
 		Image magicFlowersImage;
 		movePlatformImage.loadFromFile("images/magicF.png");
