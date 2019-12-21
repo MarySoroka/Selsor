@@ -337,11 +337,16 @@ void changeLevel(Level& lvl, int& numberLevel) {
 	if (numberLevel == 3) { lvl.LoadFromFile("map/homeMap.tmx"); }
 }
 
+void showWin() {
+	SoundBuffer winBuffer;
+	winBuffer.loadFromFile("sound/goodEnd.ogg");
+	Sound win(winBuffer);
+	win.play();
+
+}
 
 bool startGame(RenderWindow& window, int& numberLevel) {
 
-
-	//menu(window);
 	view.reset(sf::FloatRect(0, 0, 1376, 768));
 	Level lvl;
 	changeLevel(lvl, numberLevel);//для загрузки карты для нужного уровня
@@ -356,6 +361,8 @@ bool startGame(RenderWindow& window, int& numberLevel) {
 	powerFImage.loadFromFile("images/powerF.png");
 
 	Music music;//������� ������ ������
+
+	Music winMusic;
 	Image  MagicPowerImage;//����������� ��� ����
 	MagicPowerImage.loadFromFile("images/MagicEffect2.png");//��������� �������� � ������ �����������
 
@@ -366,44 +373,47 @@ bool startGame(RenderWindow& window, int& numberLevel) {
 	Sound ghostScream;
 	Sound ghostDeath;
 
+	
+	
+
 	int wEnemy, Henemy;
-	std::list<Entity*>  entities;//������ ������, ���� ���� ������ �������.�������� ������.
-	std::list<Entity*>::iterator it;//�������� ����� ��������� �� ��-��� ������
-	std::list<Entity*>::iterator it2;//������ ��������.��� �������������� ����� ��������� ������
-	std::vector<Object> e = lvl.GetObjects("easyEnemy");//��� ������� ����� �� tmx ����� �������� � ���� �������
+	std::list<Entity*>  entities;
+	std::list<Entity*>::iterator it;
+	std::list<Entity*>::iterator it2;
+	std::vector<Object> e = lvl.GetObjects("easyEnemy");
 
 	switch (numberLevel)
 	{
 	   case 1: {
 		
-		easyEnemyImage.loadFromFile("images/enemies/swampGhost/ghost.png");
-		easyEnemyImage.createMaskFromColor(Color(255, 0, 0));
+			easyEnemyImage.loadFromFile("images/enemies/swampGhost/ghost.png");
+			easyEnemyImage.createMaskFromColor(Color(255, 0, 0));
 
 		
-		movePlatformImage.loadFromFile("images/MovingPlatform.png");
+			movePlatformImage.loadFromFile("images/MovingPlatform.png");
 
 		
-		SoundBuffer shootBuffer;//������ ����� ��� �����
-		shootBuffer.loadFromFile("sound/shoot.ogg");//��������� � ���� ����
-		Sound shoot(shootBuffer);//создаем звук и загружаем в него звук из буфера
+			SoundBuffer shootBuffer;
+			shootBuffer.loadFromFile("sound/shoot.ogg");
+			Sound shoot(shootBuffer);
 
 
-		SoundBuffer ghostScreamtBuffer;//������ ����� ��� �����
-		ghostScreamtBuffer.loadFromFile("images/enemies/swampGhost/ghostScream.ogg");
-		Sound ghostScream(ghostScreamtBuffer);//создаем звук и загружаем в него звук из буфера
+			SoundBuffer ghostScreamtBuffer;
+			ghostScreamtBuffer.loadFromFile("images/enemies/swampGhost/ghostScream.ogg");
+			Sound ghostScream(ghostScreamtBuffer);
 
 
-		SoundBuffer ghostDeathBuffer;//������ ����� ��� �����
-		ghostDeathBuffer.loadFromFile("images/enemies/swampGhost/ghostDeath.ogg");
-		Sound ghostDeath(ghostDeathBuffer);//создаем звук и загружаем в него звук из буфера
+			SoundBuffer ghostDeathBuffer;
+			ghostDeathBuffer.loadFromFile("images/enemies/swampGhost/ghostDeath.ogg");
+			Sound ghostDeath(ghostDeathBuffer);
 
 
-		music.openFromFile("sound/swamp.ogg");//��������� ����
-		music.play();//������������� ������
-		music.setVolume(15); 
-		Henemy = 80;
-		wEnemy = 40;
-		break;
+			music.openFromFile("sound/swamp.ogg");
+			music.play();
+			music.setVolume(15); 
+			Henemy = 80;
+			wEnemy = 40;
+			break;
     	}
 	   case 2:
 	   {
@@ -414,23 +424,24 @@ bool startGame(RenderWindow& window, int& numberLevel) {
 		   movePlatformImage.loadFromFile("images/MovingPlatform.png");
 
 
-		   SoundBuffer shootBuffer;//������ ����� ��� �����
-		   shootBuffer.loadFromFile("sound/shoot.ogg");//��������� � ���� ����
-		   Sound shoot(shootBuffer);//создаем звук и загружаем в него звук из буфера
+		   SoundBuffer shootBuffer;
+		   shootBuffer.loadFromFile("sound/shoot.ogg");
+		   Sound shoot(shootBuffer);
 
 
-		   SoundBuffer ghostScreamtBuffer;//������ ����� ��� �����
+		   SoundBuffer ghostScreamtBuffer;
 		   ghostScreamtBuffer.loadFromFile("images/enemies/skeleton/attackSkel.ogg");
-		   Sound ghostScream(ghostScreamtBuffer);//создаем звук и загружаем в него звук из буфера
+		   Sound ghostScream(ghostScreamtBuffer);
 
 
-		   SoundBuffer ghostDeathBuffer;//������ ����� ��� �����
+		   SoundBuffer ghostDeathBuffer;
 		   ghostDeathBuffer.loadFromFile("images/enemies/skeleton/skelletonDeath.ogg");
-		   Sound ghostDeath(ghostDeathBuffer);//создаем звук и загружаем в него звук из буфера
+		   Sound ghostDeath(ghostDeathBuffer);
 
+		   
 
-		   music.openFromFile("sound/lake.ogg");//��������� ����
-		   music.play();//������������� ������
+		   music.openFromFile("sound/lake.ogg");
+		   music.play();
 		   music.setVolume(15);
 		   Henemy = 80;
 		   wEnemy = 90;
@@ -444,25 +455,25 @@ bool startGame(RenderWindow& window, int& numberLevel) {
 		   movePlatformImage.loadFromFile("images/MovingPlatform.png");
 
 
-		   SoundBuffer shootBuffer;//������ ����� ��� �����
-		   shootBuffer.loadFromFile("sound/shoot.ogg");//��������� � ���� ����
-		   Sound shoot(shootBuffer);//создаем звук и загружаем в него звук из буфера
+		   SoundBuffer shootBuffer;
+		   shootBuffer.loadFromFile("sound/shoot.ogg");
+		   Sound shoot(shootBuffer);
 
 
-		   SoundBuffer ghostScreamtBuffer;//������ ����� ��� �����
+		   SoundBuffer ghostScreamtBuffer;
 		   ghostScreamtBuffer.loadFromFile("images/enemies/dog/dogGrowl.ogg");
-		   Sound ghostScream(ghostScreamtBuffer);//создаем звук и загружаем в него звук из буфера
+		   Sound ghostScream(ghostScreamtBuffer);
 
 
-		   SoundBuffer ghostDeathBuffer;//������ ����� ��� �����
+		   SoundBuffer ghostDeathBuffer;
 		   ghostDeathBuffer.loadFromFile("images/enemies/dog/dogDeath.ogg");
-		   Sound ghostDeath(ghostDeathBuffer);//создаем звук и загружаем в него звук из буфера
+		   Sound ghostDeath(ghostDeathBuffer);
 
 
 		   Henemy = 20;
 		   wEnemy = 40;
-		   music.openFromFile("sound/home.ogg");//��������� ����
-		   music.play();//������������� ������
+		   music.openFromFile("sound/home.ogg");
+		   music.play();
 		   music.setVolume(15);
 
 		  
@@ -675,7 +686,13 @@ bool startGame(RenderWindow& window, int& numberLevel) {
 		lifeBarPlayer.update(p.health,1.1,0);
 		magicBarPlayer.update(p.magic,1.1,0);
 		powerBarPlayer.update(p.power,0.92,0);
-		if (Keyboard::isKeyPressed(Keyboard::T)) { lvl.levelNumber++; return true; }
+		if ((Keyboard::isKeyPressed(Keyboard::T)) || (p.power == 100)) {
+			music.pause();
+			winMusic.openFromFile("sound/goodEnd.ogg");
+			winMusic.play();
+			winMusic.setVolume(15);
+			lvl.levelNumber++; 
+			return true; }
 		if (Keyboard::isKeyPressed(Keyboard::Tab)) { return true; }//если таб, то перезагружаем игру
 		if (Keyboard::isKeyPressed(Keyboard::Escape)) { return false; }//если эскейп, то выходим из игры
 
