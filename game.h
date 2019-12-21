@@ -412,7 +412,7 @@ bool startGame(RenderWindow& window, int& numberLevel) {
 		   easyEnemyImage.createMaskFromColor(Color(255, 0, 0));
 
 
-		   movePlatformImage.loadFromFile("images/MovingPlatform.png");
+		   movePlatformImage.loadFromFile("images/MovingPlatform2.png");
 
 
 		   SoundBuffer shootBuffer;//������ ����� ��� �����
@@ -442,7 +442,7 @@ bool startGame(RenderWindow& window, int& numberLevel) {
 		   easyEnemyImage.createMaskFromColor(Color(255, 0, 0));
 
 
-		   movePlatformImage.loadFromFile("images/MovingPlatform.png");
+		   movePlatformImage.loadFromFile("images/MovingPlatform3.png");
 
 
 		   SoundBuffer shootBuffer;//������ ����� ��� �����
