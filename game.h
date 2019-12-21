@@ -531,13 +531,17 @@ bool startGame(RenderWindow& window, int& numberLevel) {
 				window.close();
 				
 			}
-			if (p.isShoot == true) {
-				p.isShoot = false;
-				entities.push_back(new  MagicPower(MagicPowerImage, "MagicPower", lvl, p.x, p.y, 100, 16, p.state));
-				shoot.play();
-				p.isMagicPower = true;
-			} 
+			if (p.magic != 0)
+			{
 
+				if (p.isShoot == true) {
+					p.isShoot = false;
+					entities.push_back(new  MagicPower(MagicPowerImage, "MagicPower", lvl, p.x, p.y, 100, 16, p.state));
+					shoot.play();
+					p.magic -= 10;
+					p.isMagicPower = true;
+				}
+			}
 
 		}
 
@@ -624,26 +628,44 @@ bool startGame(RenderWindow& window, int& numberLevel) {
 
 			}
 			
-				if ((*it)->name == "easyEnemy")
-				{
-
-		
-					for ( it2 = entities.begin(); it2 != entities.end(); it2++)
+			if ((*it)->getRect().intersects(p.getRect()))//если прямоугольник спрайта объекта пересекается с игроком
+			{
+				if ((*it)->name == "EasyEnemy") {//и при этом имя объекта EasyEnemy,то..
+					if ((*it)->dx > 0)//если враг идет вправо
 					{
-						
-						if ((*it2)->name == "MagicPower")
-							//std::cout << MagicPower->life;
-							if ((*it2)->life == true)
-							{
-								if ((*it2)->getRect().intersects((*it)->getRect()))
-								{
-									p.isMagicPower = false;
-									(*it2)->life = false;
-									(*it)->health = 0;
-								}
-							}
+						std::cout << "(*it)->x" << (*it)->x << "\n";//коорд игрока
+						std::cout << "p.x" << p.x << "\n\n";//коорд врага
+
+						(*it)->x = p.x - (*it)->w; //отталкиваем его от игрока влево (впритык)
+						(*it)->dx = 0;//останавливаем
+
+						std::cout << "new (*it)->x" << (*it)->x << "\n";//новая коорд врага
+						std::cout << "new p.x" << p.x << "\n\n";//новая коорд игрока (останется прежней)
+					}
+					if ((*it)->dx < 0)//если враг идет влево
+					{
+						(*it)->x = p.x + p.w; //аналогично - отталкиваем вправо
+						(*it)->dx = 0;//останавливаем
 					}
 				}
+			}
+
+			for (it2 = entities.begin(); it2 != entities.end(); it2++)
+			{
+				if ((*it)->getRect() != (*it2)->getRect())
+					if (((*it)->getRect().intersects((*it2)->getRect())) && ((*it)->name == "easyEnemy") && ((*it2)->name == "MagicPower"))//���� ����������� ��� ������� � ��� �����
+					{
+						
+							
+							(*it)->health -= 20;
+							ghostDeath.play();
+							(*it)->shift = 120;
+							(*it)->update(time, shift, numberLevel);
+
+					}
+
+			}
+				
 			
 			if (((*it)->getRect().intersects(p.getRect())) && ((*it)->name == "magicF"))
 			{
@@ -668,6 +690,7 @@ bool startGame(RenderWindow& window, int& numberLevel) {
 						(*it)->dx *= -1;
 						(*it)->sprite.scale(-1, 1);
 					}
+					
 			}
 
 
