@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="80" height="45" tilewidth="37" tileheight="37" nextobjectid="74">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="80" height="45" tilewidth="37" tileheight="37" nextobjectid="75">
  <tileset firstgid="1" name="SwampTiles" tilewidth="37" tileheight="37">
   <image source="imageMap/SwampTiles.png" width="1788" height="855"/>
  </tileset>
@@ -25264,7 +25264,7 @@
   <object id="52" name="movingPlatform" x="1132.14" y="1038.46" width="204.333" height="32"/>
   <object id="53" name="movingPlatform" x="1784.62" y="1116.39" width="204.333" height="32"/>
   <object id="55" name="easyEnemy" x="2084" y="1264.33" width="50.6663" height="54.6667"/>
-  <object id="56" name="magicF" x="682.667" y="554.667" width="26.6667" height="48"/>
+  <object id="56" name="powerF" x="682.667" y="554.667" width="26.6667" height="48"/>
   <object id="57" name="magicF" x="574.667" y="716" width="21.3333" height="69.3333"/>
   <object id="58" name="powerF" x="474.667" y="1213.33" width="24" height="90.6667"/>
   <object id="59" name="magicF" x="2436" y="716" width="24" height="69.3333"/>
@@ -25280,5 +25280,6 @@
   <object id="71" name="solidEnemy" x="1271" y="1272" width="22" height="53"/>
   <object id="72" name="solidEnemy" x="1794" y="1278" width="15" height="45"/>
   <object id="73" name="solidEnemy" x="2379" y="1272" width="25" height="50"/>
+  <object id="74" name="movingPlatform" x="1550" y="662" width="163" height="23"/>
  </objectgroup>
 </map>
