@@ -222,7 +222,7 @@ class Enemy :public Entity {
 public:
 	float CurrentFrame = 0;
 	Enemy(Image& image, String Name, Level& lvl, float X, float Y, int W, int H) :Entity(image, Name, X, Y, W, H) {
-		obj = lvl.GetObjects("solid");//��������������.�������� ������ ������� ��� �������������� ����� � ������
+		obj = lvl.GetObjects("solidEnemy");//��������������.�������� ������ ������� ��� �������������� ����� � ������
 		if (name == "easyEnemy") {
 			sprite.setTextureRect(IntRect(0, 0, w, h));
 			sprite.setScale(-2.0f,2.0f);
@@ -242,7 +242,7 @@ public:
 		for (int i = 0; i < obj.size(); i++){
 			if (getRect().intersects(obj[i].rect))
 			{
-				if (obj[i].name == "solid")//���� ��������� �����������
+				if (obj[i].name == "solidEnemy")//���� ��������� �����������
 				{
 					if (Dy > 0) { y = obj[i].rect.top - h;  dy = 0; onGround = true; }
 					if (Dy < 0) { y = obj[i].rect.top + obj[i].rect.height;   dy = 0; }
@@ -342,7 +342,7 @@ void changeLevel(Level& lvl, int& numberLevel) {
 bool startGame(RenderWindow& window, int& numberLevel) {
 
 
-	menu(window);
+	//menu(window);
 	view.reset(sf::FloatRect(0, 0, 1376, 768));
 	Level lvl;
 	changeLevel(lvl, numberLevel);//для загрузки карты для нужного уровня
@@ -430,7 +430,7 @@ bool startGame(RenderWindow& window, int& numberLevel) {
 		   Sound ghostDeath(ghostDeathBuffer);//создаем звук и загружаем в него звук из буфера
 
 
-		   music.openFromFile("sound/lake.ogg");//��������� ����
+		   music.openFromFile("sound/forest.ogg");//��������� ����
 		   music.play();//������������� ������
 		   music.setVolume(15);
 		   Henemy = 80;
