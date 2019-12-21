@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<<<<<<< HEAD
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="80" height="45" tilewidth="37" tileheight="37" nextobjectid="74">
-=======
-<<<<<<< HEAD
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="80" height="45" tilewidth="37" tileheight="37" nextobjectid="73">
-=======
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="80" height="45" tilewidth="37" tileheight="37" nextobjectid="74">
->>>>>>> 2e6db2ced19b734f1ca5ddca1443c82e257a4695
->>>>>>> 87d94729eba79d8f37fdd7352975328b8eba762a
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="80" height="45" tilewidth="37" tileheight="37" nextobjectid="71">
  <tileset firstgid="1" name="SwampTiles" tilewidth="37" tileheight="37">
   <image source="imageMap/SwampTiles.png" width="1788" height="855"/>
  </tileset>
@@ -19273,12 +19265,12 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="577"/>
+   <tile gid="579"/>
+   <tile gid="579"/>
+   <tile gid="580"/>
+   <tile gid="585"/>
+   <tile gid="592"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="819"/>
@@ -19353,12 +19345,12 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="865"/>
+   <tile gid="830"/>
+   <tile gid="830"/>
+   <tile gid="830"/>
+   <tile gid="830"/>
+   <tile gid="880"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="865"/>
@@ -19433,11 +19425,11 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="913"/>
+   <tile gid="924"/>
+   <tile gid="925"/>
+   <tile gid="926"/>
+   <tile gid="927"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -19931,7 +19923,7 @@
    <tile gid="578"/>
    <tile gid="580"/>
    <tile gid="580"/>
-   <tile gid="583"/>
+   <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -20011,7 +20003,7 @@
    <tile gid="819"/>
    <tile gid="819"/>
    <tile gid="819"/>
-   <tile gid="680"/>
+   <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -20091,7 +20083,7 @@
    <tile gid="914"/>
    <tile gid="915"/>
    <tile gid="916"/>
-   <tile gid="920"/>
+   <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -20497,9 +20489,9 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="583"/>
-   <tile gid="583"/>
-   <tile gid="583"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -20577,9 +20569,9 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="920"/>
-   <tile gid="922"/>
-   <tile gid="918"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -25245,60 +25237,47 @@
   <object id="7" name="solid" x="2408" y="1305" width="253" height="46"/>
   <object id="8" name="easyEnemy" x="992.333" y="1277.33" width="38.3333" height="47.3333"/>
   <object id="9" name="player" x="1080.67" y="1114" width="42.6667" height="40.6667"/>
-  <object id="10" name="movingPlatform" x="631.333" y="1044" width="204.333" height="32"/>
+  <object id="10" name="movingPlatform" x="686" y="1061" width="204.333" height="32"/>
   <object id="14" name="solid" x="1039.33" y="1156.67" width="121.333" height="74.6667"/>
   <object id="15" name="solid" x="1343.33" y="902" width="145.333" height="64"/>
   <object id="25" name="solid" x="370" y="370" width="20" height="1104"/>
   <object id="26" name="solid" x="387.333" y="368.667" width="1609.33" height="38.6667"/>
   <object id="29" name="solid" x="1995.33" y="370" width="602.667" height="28"/>
-  <object id="31" name="solid" x="2579.09" y="369.03" width="45.5757" height="1108"/>
+  <object id="31" name="solid" x="2543.09" y="373.03" width="45.5757" height="1108"/>
   <object id="34" name="solid" x="519.333" y="787.333" width="517.333" height="62.6667"/>
   <object id="35" name="solid" x="1002" y="711.333" width="80" height="101.333"/>
   <object id="36" name="solid" x="1082" y="710" width="110.667" height="69.3333"/>
   <object id="37" name="solid" x="1148.67" y="670" width="196" height="70.6667"/>
   <object id="38" name="solid" x="519.333" y="639.333" width="36" height="158.667"/>
   <object id="39" name="solid" x="666" y="603.333" width="197.333" height="62.6667"/>
+  <object id="40" name="solid" x="1483.33" y="563.333" width="193.333" height="77.3333"/>
   <object id="41" name="solid" x="1778" y="526" width="76" height="109.333"/>
   <object id="42" name="solid" x="1839.33" y="563.333" width="528" height="74.6667"/>
   <object id="43" name="solid" x="1888.67" y="743.333" width="146.667" height="70.6667"/>
   <object id="44" name="solid" x="1991.33" y="747.333" width="37.3333" height="182.667"/>
-  <object id="45" name="solid" x="2018" y="860.667" width="130.667" height="70.6667"/>
+  <object id="45" name="solid" x="2018" y="860.667" width="128" height="72"/>
   <object id="46" name="solid" x="2482" y="706" width="48" height="228"/>
   <object id="47" name="solid" x="2406" y="787.333" width="92" height="146.667"/>
   <object id="48" name="solid" x="2332.67" y="859.333" width="80" height="76"/>
   <object id="49" name="swamp" x="720.667" y="1324.67" width="572" height="36"/>
   <object id="50" name="swamp" x="1795" y="1323" width="610" height="36"/>
   <object id="51" name="solid" x="405.909" y="413.576" width="52.0303" height="881.364"/>
-  <object id="52" name="movingPlatform" x="1132.14" y="1038.46" width="204.333" height="32"/>
-  <object id="53" name="movingPlatform" x="1784.62" y="1116.39" width="204.333" height="32"/>
+  <object id="52" name="movingPlatform" x="1161.47" y="1047.79" width="204.333" height="32"/>
+  <object id="53" name="movingPlatform" x="1940.95" y="1085.39" width="204.333" height="32"/>
   <object id="55" name="easyEnemy" x="2084" y="1264.33" width="50.6663" height="54.6667"/>
-  <object id="56" name="magicF" x="682.667" y="554.667" width="26.6667" height="48"/>
-  <object id="57" name="magicF" x="574.667" y="716" width="21.3333" height="69.3333"/>
-  <object id="58" name="powerF" x="474.667" y="1213.33" width="24" height="90.6667"/>
-  <object id="59" name="magicF" x="2436" y="716" width="24" height="69.3333"/>
-  <object id="60" name="powerF" x="1876" y="506.667" width="20" height="54.6667"/>
-  <object id="62" name="solid" x="2368" y="1116" width="112" height="40"/>
-  <object id="63" name="magicF" x="2450.67" y="1049.33" width="14.6667" height="66.6667"/>
-  <object id="64" name="healthF" x="2444" y="1241.33" width="17.3333" height="62.6667"/>
-  <object id="65" name="powerF" x="2049.33" y="782.667" width="24" height="76"/>
-  <object id="67" name="powerF" x="2306.67" y="498.667" width="14.6667" height="61.3333"/>
-  <object id="68" name="healthF" x="1454.67" y="836" width="21.3333" height="69.3333"/>
-  <object id="69" name="powerF" x="529.333" y="538.667" width="17.3333" height="97.3333"/>
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-  <object id="70" name="movingPlatform" x="1561.47" y="774.909" width="204.333" height="32"/>
-  <object id="71" name="movingPlatform" x="1391.77" y="553.697" width="204.333" height="32"/>
-  <object id="72" name="powerF" x="1562.73" y="1251.45" width="20" height="54.6667"/>
-=======
->>>>>>> 87d94729eba79d8f37fdd7352975328b8eba762a
-  <object id="70" name="solidEnemy" x="714" y="1278" width="30" height="49"/>
-  <object id="71" name="solidEnemy" x="1271" y="1272" width="22" height="53"/>
-  <object id="72" name="solidEnemy" x="1794" y="1278" width="15" height="45"/>
-  <object id="73" name="solidEnemy" x="2379" y="1272" width="25" height="50"/>
-<<<<<<< HEAD
-=======
->>>>>>> 2e6db2ced19b734f1ca5ddca1443c82e257a4695
->>>>>>> 87d94729eba79d8f37fdd7352975328b8eba762a
+  <object id="56" name="solidEnemy" x="716" y="1301" width="46" height="22"/>
+  <object id="57" name="solidEnemy" x="1260" y="1300" width="33" height="23"/>
+  <object id="58" name="solidEnemy" x="1791" y="1301" width="35" height="20"/>
+  <object id="59" name="solidEnemy" x="2368" y="1304" width="40" height="20"/>
+  <object id="61" name="powerF" x="2456" y="737" width="11" height="50"/>
+  <object id="62" name="powerF" x="1867" y="514" width="10" height="48"/>
+  <object id="63" name="powerF" x="680" y="554" width="12" height="49"/>
+  <object id="64" name="powerF" x="527" y="584" width="14" height="55"/>
+  <object id="65" name="powerF" x="469" y="1234" width="15" height="68"/>
+  <object id="66" name="powerF" x="2522" y="1238" width="8" height="66"/>
+  <object id="67" name="magicF" x="580" y="728" width="10" height="57"/>
+  <object id="68" name="magicF" x="1915" y="701" width="15" height="44"/>
+  <object id="69" name="healthF" x="1644" y="505" width="9" height="60"/>
+  <object id="70" name="healthF" x="1471" y="834" width="9" height="69"/>
  </objectgroup>
 </map>

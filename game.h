@@ -81,7 +81,7 @@ public:
 				sprite.setScale(-1.5f, 1.5f);
 				state = jump; dy = -0.9; onGround = false;
 				if (!isFast) {
-					dy = -0.2;
+					dy = -0.4;
 					speed = 0.05;
 				}
 			}
