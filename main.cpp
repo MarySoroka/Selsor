@@ -14,7 +14,12 @@
 
 
 void gameRunning(RenderWindow& window, int& numberLevel) {//ф-ция перезагружает игру , если это необходимо
-	if (startGame(window, numberLevel)) { numberLevel++; gameRunning(window, numberLevel); }//принимает с какого уровня начать игру
+	if (startGame(window, numberLevel) == next) { 
+		numberLevel++; gameRunning(window, numberLevel); 
+	}
+	if (startGame(window, numberLevel) == reload) {
+		 gameRunning(window, numberLevel);
+	}
 }
 
 

@@ -3,7 +3,7 @@
  <tileset firstgid="1" name="rivertiles" tilewidth="37" tileheight="37">
   <image source="imageMap/rivertiles.png" width="3508" height="1628"/>
  </tileset>
- <layer name="Слой тайлов 1" width="80" height="45">
+ <layer name="Слой тайлов 1" width="80" height="45" opacity="0.97">
   <data>
    <tile gid="12"/>
    <tile gid="13"/>
@@ -28838,7 +28838,7 @@
  <objectgroup name="collision">
   <object id="1" name="solid" x="2" y="1282" width="590" height="46"/>
   <object id="2" name="solid" x="2446" y="1286" width="522" height="46"/>
-  <object id="3" name="lake" x="590" y="1290" width="1856" height="246"/>
+  <object id="3" name="lake" x="584.667" y="1362" width="1856" height="246"/>
   <object id="4" name="player" x="291.33" y="1154" width="70" height="128"/>
   <object id="5" name="easyEnemy" x="2728" y="1158" width="66" height="122"/>
   <object id="7" name="movingPlatform" x="1314" y="1188" width="408" height="28"/>

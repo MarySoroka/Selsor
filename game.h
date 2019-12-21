@@ -81,7 +81,7 @@ public:
 				sprite.setScale(-1.5f, 1.5f);
 				state = jump; dy = -0.9; onGround = false;
 				if (!isFast) {
-					dy = -0.2;
+					dy = -0.4;
 					speed = 0.05;
 				}
 			}
@@ -127,7 +127,10 @@ public:
 					if (Dx < 0) { x = obj[i].rect.left + obj[i].rect.width; }
 					isFast = false;
 				}
-
+				if ((obj[i].name == "deathZone")|| (obj[i].name == "lake"))//���� ��������� �����������
+				{
+					health = 0;
+				}
 			}
 	}
 	void update(float time, int shift, int level)
@@ -338,8 +341,8 @@ void changeLevel(Level& lvl, int& numberLevel) {
 	if (numberLevel == 3) { lvl.LoadFromFile("map/homeMap.tmx"); }
 }
 
-
-bool startGame(RenderWindow& window, int& numberLevel) {
+enum stateOfGame {next,reload,ex};
+enum stateOfGame startGame(RenderWindow& window, int& numberLevel) {
 	//menu(window);
 	view.reset(sf::FloatRect(0, 0, 1376, 768));
 	Level lvl;
@@ -501,6 +504,7 @@ bool startGame(RenderWindow& window, int& numberLevel) {
 			e[i].rect.left;//����� �
 			e[i].rect.top;//����� Y
 		}
+		
 	}
 	e = lvl.GetObjects("movingPlatform");//�������� ��� ��������� � ������ 
 	for (int i = 0; i < e.size(); i++)
@@ -705,9 +709,9 @@ bool startGame(RenderWindow& window, int& numberLevel) {
 		powerBarPlayer.update(p.power,0.92,0);
 		if ((Keyboard::isKeyPressed(Keyboard::T)) || (p.power == 100)) {
 			lvl.levelNumber++; 
-			return true; }
-		if (Keyboard::isKeyPressed(Keyboard::Tab)) { return true; }//если таб, то перезагружаем игру
-		if (Keyboard::isKeyPressed(Keyboard::Escape)) { return false; }//если эскейп, то выходим из игры
+			return next; }
+		if ((Keyboard::isKeyPressed(Keyboard::Tab))|| (p.health == 0)) { return reload; }//если таб, то перезагружаем игру
+		if (Keyboard::isKeyPressed(Keyboard::Escape)) { return ex; }//если эскейп, то выходим из игры
 
 		p.CurrentFrame += 0.005 * time;
 		p.update(time,0,numberLevel);
