@@ -81,6 +81,7 @@ public:
 				sprite.setScale(-1.5f, 1.5f);
 				state = jump; dy = -0.9; onGround = false;
 				if (!isFast) {
+					dy = -0.2;
 					speed = 0.05;
 				}
 			}
@@ -341,7 +342,7 @@ void changeLevel(Level& lvl, int& numberLevel) {
 bool startGame(RenderWindow& window, int& numberLevel) {
 
 
-	//menu(window);
+	menu(window);
 	view.reset(sf::FloatRect(0, 0, 1376, 768));
 	Level lvl;
 	changeLevel(lvl, numberLevel);//для загрузки карты для нужного уровня
