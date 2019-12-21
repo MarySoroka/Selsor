@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="80" height="45" tilewidth="37" tileheight="37" nextobjectid="54">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="80" height="45" tilewidth="37" tileheight="37" nextobjectid="56">
  <tileset firstgid="1" name="rivertiles" tilewidth="37" tileheight="37">
   <image source="imageMap/rivertiles.png" width="3508" height="1628"/>
  </tileset>
@@ -28870,18 +28870,14 @@
   <object id="38" name="magicF" x="2938.67" y="-17.3335" width="46.6667" height="1694.67"/>
   <object id="39" name="magicF" x="-3.33335" y="-7.335" width="46.6667" height="1694.67"/>
   <object id="41" name="magicF" x="-18.3333" y="-11.335" width="2998.67" height="38.67"/>
-  <object id="42" name="solid" x="861" y="909" width="29" height="19"/>
-  <object id="43" name="solid" x="522.5" y="467.5" width="29" height="19"/>
-  <object id="44" name="solid" x="407.5" y="905.5" width="29" height="19"/>
-  <object id="45" name="solid" x="856.5" y="460.5" width="29" height="19"/>
-  <object id="46" name="solid" x="1292.5" y="835.5" width="29" height="19"/>
-  <object id="47" name="solid" x="1748.5" y="835.5" width="29" height="19"/>
-  <object id="48" name="solid" x="1710.5" y="502.5" width="29" height="19"/>
-  <object id="49" name="solid" x="1379.5" y="503.5" width="29" height="19"/>
-  <object id="50" name="solid" x="2225.5" y="872.5" width="29" height="19"/>
-  <object id="51" name="solid" x="2595.5" y="870.5" width="29" height="19"/>
-  <object id="52" name="solid" x="2372.5" y="465.5" width="29" height="19"/>
-  <object id="53" name="solid" x="2633.5" y="464.5" width="29" height="19"/>
+  <object id="42" name="solidEnemy" x="861" y="909" width="29" height="19"/>
+  <object id="44" name="solidEnemy" x="408.5" y="910.5" width="29" height="19"/>
+  <object id="48" name="solidEnemy" x="1710.5" y="502.5" width="29" height="19"/>
+  <object id="49" name="solidEnemy" x="1379.5" y="503.5" width="29" height="19"/>
+  <object id="50" name="solidEnemy" x="2225.5" y="872.5" width="29" height="19"/>
+  <object id="51" name="solidEnemy" x="2595.5" y="870.5" width="29" height="19"/>
+  <object id="54" name="solidEnemy" x="2921" y="1218" width="15" height="68"/>
+  <object id="55" name="solidEnemy" x="2456" y="1225" width="18" height="61"/>
  </objectgroup>
  <layer name="Слой тайлов 7" width="80" height="45">
   <data>

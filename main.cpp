@@ -21,7 +21,7 @@ void gameRunning(RenderWindow& window, int& numberLevel) {//ф-ция перезагружает 
 int main(){
 	RenderWindow window(VideoMode(1376, 768), "SELSOR");
 	int numOfCurrLev = 1;
-	menu(window);
+	
 	gameRunning(window,numOfCurrLev);
    return 0;
 }
