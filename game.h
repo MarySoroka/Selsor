@@ -1,7 +1,6 @@
 ﻿#include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include "view.h"
-#include <iostream>
 #include "mission.h"
 #include "iostream"
 #include "level.h"
@@ -11,31 +10,31 @@
 #include "Bar.h"
 #include "menu.h"
 using namespace sf;
-////////////////////////////////////����� �����-��������//////////////////////////
+
 class Entity {
 public:
-	std::vector<Object> obj;//������ �������� �����
+	std::vector<Object> obj;
 	float dx, dy, x, y, speed, moveTimer;
 	int w, h, health, shift;
-	bool life, isMove, onGround, isFast;
+	bool life, isMove, isGravity, isFast;
 	Texture texture;
 	Sprite sprite;
 	String name;
 	Entity(Image& image, String Name, float X, float Y, int W, int H) {
 		x = X; y = Y; w = W; h = H; name = Name; moveTimer = 0;
 		speed = 0; health = 100; dx = 0; dy = 0;
-		life = true; onGround = false; isMove = false; isFast = true;
+		life = true; isGravity = false; isMove = false; isFast = true;
 		texture.loadFromImage(image);
 		sprite.setTexture(texture);
 		sprite.setOrigin(w / 2, h / 2);
 	}
 
-	FloatRect getRect() {//�-��� ��������� ��������������. ��� �����,������� (���,�����).
-		return FloatRect(x, y, w, h);//��� �-��� ����� ��� �������� ������������ 
+	FloatRect getRect() {
+		return FloatRect(x, y, w, h);
 	}
 	virtual void update(float time, int shift, int level) = 0;
 };
-////////////////////////////////////////////////////����� ������////////////////////////
+
 class Player :public Entity {
 public:
 	enum { left, right, up, down, jump, stay} state;
@@ -44,7 +43,7 @@ public:
 	int power, magic;
 	float CurrentFrame = 0;
 	Player(Image& image, String Name, Level& lev, float X, float Y, int W, int H) :Entity(image, Name, X, Y, W, H) {
-		playerScore =isShoot = isMagicPower = 0; state = stay; obj = lev.GetAllObjects();//��������������.�������� ��� ������� ��� �������������� ��������� � ������
+		playerScore =isShoot = isMagicPower = 0; state = stay; obj = lev.GetAllObjects();
 		if (name == "Player1") {
 			sprite.setTextureRect(IntRect(4, 19, w, h));
 			sprite.setScale(1.5f,1.5f);
@@ -57,8 +56,8 @@ public:
 	void control(float time) {
 		if (Keyboard::isKeyPressed) {
 			if (Keyboard::isKeyPressed(Keyboard::Left)) {
-				if (CurrentFrame > 3) CurrentFrame -= 2; //проходимся по кадрам с первого по третий включительно. если пришли к третьему кадру - откидываемся назад.
-				sprite.setTextureRect(IntRect(35 * int(CurrentFrame), 20, 40, 60)); //проходимся по координатам Х. получается 96,96*2,96*3 и опять 96
+				if (CurrentFrame > 3) CurrentFrame -= 2;
+				sprite.setTextureRect(IntRect(35 * int(CurrentFrame), 20, 40, 60)); 
 				sprite.move(-0.1 * time, 0);
 				sprite.setScale(-1.5f,1.5f);
 				state = left; speed = 0.2;
@@ -67,8 +66,8 @@ public:
 				}
 			}
 			if (Keyboard::isKeyPressed(Keyboard::Right)) {
-				if (CurrentFrame > 3) CurrentFrame -= 2; //проходимся по кадрам с первого по третий включительно. если пришли к третьему кадру - откидываемся назад.
-				sprite.setTextureRect(IntRect(35* int(CurrentFrame), 20, 40, 60)); //проходимся по координатам Х. получается 96,96*2,96*3 и опять 96
+				if (CurrentFrame > 3) CurrentFrame -= 2; 
+				sprite.setTextureRect(IntRect(35* int(CurrentFrame), 20, 40, 60)); 
 				sprite.move(-0.1 * time, 0);
 				sprite.setScale(1.5f, 1.5f);
 				state = right; speed = 0.2;
@@ -77,9 +76,9 @@ public:
 				}
 			}
 
-			if ((Keyboard::isKeyPressed(Keyboard::Up)) && (onGround)) {
+			if ((Keyboard::isKeyPressed(Keyboard::Up)) && (isGravity)) {
 				sprite.setScale(-1.5f, 1.5f);
-				state = jump; dy = -0.9; onGround = false;
+				state = jump; dy = -0.9; isGravity = false;
 				if (!isFast) {
 					dy = -0.4;
 					speed = 0.05;
@@ -102,32 +101,28 @@ public:
 
 		}
 	};
-
-
-
 	void checkCollisionWithMap(float Dx, float Dy)
 	{
-
-		for (int i = 0; i < obj.size(); i++)//���������� �� ��������
-			if (getRect().intersects(obj[i].rect))//��������� ����������� ������ � ��������
+		for (int i = 0; i < obj.size(); i++)
+			if (getRect().intersects(obj[i].rect))
 			{
-				if (obj[i].name == "solid")//���� ��������� �����������
+				if (obj[i].name == "solid")
 				{
-					if (Dy > 0) { y = obj[i].rect.top - h;  dy = 0; onGround = true; }
+					if (Dy > 0) { y = obj[i].rect.top - h;  dy = 0; isGravity = true; }
 					if (Dy < 0) { y = obj[i].rect.top + obj[i].rect.height;   dy = 0; }
 					if (Dx > 0) { x = obj[i].rect.left - w; }
 					if (Dx < 0) { x = obj[i].rect.left + obj[i].rect.width; }
 					isFast = true;
 				}
-				if (obj[i].name == "swamp")//���� ��������� �����������
+				if (obj[i].name == "swamp")
 				{
-					if (Dy > 0) { y = obj[i].rect.top - h;  dy = 0; onGround = true; }
+					if (Dy > 0) { y = obj[i].rect.top - h;  dy = 0; isGravity = true; }
 					if (Dy < 0) { y = obj[i].rect.top + obj[i].rect.height;   dy = 0; }
 					if (Dx > 0) { x = obj[i].rect.left - w; }
 					if (Dx < 0) { x = obj[i].rect.left + obj[i].rect.width; }
 					isFast = false;
 				}
-				if ((obj[i].name == "deathZone")|| (obj[i].name == "lake"))//���� ��������� �����������
+				if ((obj[i].name == "deathZone")|| (obj[i].name == "lake"))
 				{
 					health = 0;
 				}
@@ -156,6 +151,8 @@ public:
 			case 1: setPlayerCoordinateForView(x, y); break;
 			case 2: setPlayerCoordinateForView2(x, y); break;
 			case 3: setPlayerCoordinateForView3(x, y); break;
+			case 4: setPlayerCoordinateForView3(x, y); break;
+			case 5: setPlayerCoordinateForView3(x, y); break;
 			}
 		}
 		dy = dy + 0.0015 * time;
@@ -164,59 +161,52 @@ public:
 
 };
 
-class MagicPower :public Entity {//����� ����
+class MagicPower :public Entity {
 public:
-	int direction;//����������� ����
+	int direction;
 
-	MagicPower(Image& image, String Name, Level& lvl, float X, float Y, int W, int H, int dir) :Entity(image, Name, X, Y, W, H) {//�� ��� ��, ������ ����� � ����� ��������� ������ (int dir)
-		obj = lvl.GetObjects("solid");//�������������� .�������� ������ ������� ��� �������������� ���� � ������
+	MagicPower(Image& image, String Name, Level& lvl, float X, float Y, int W, int H, int dir) :Entity(image, Name, X, Y, W, H) {
+		obj = lvl.GetObjects("solid");
 		x = X;
 		y = Y;
 		direction = dir;
 		speed = 0.8;
 		w = h = 16;
 		life = true;
-		//���� ������������� � ������������
 	}
-
-
 	void update(float time, int shift, int level)
 	{
-		switch (direction)
-		{
-		case 0: dx = -speed; dy = 0;   break;//������� �������� state = left
-		case 1: dx = speed; dy = 0;   break;//������� �������� state = right
-		case 2: dy = 0; dx = -speed;   break;//������� �������� state = up
-		case 3: dy = 0; dx = -speed;   break;//������� �������� �� ������� ��������� � �����������, ���� ������ ��������� �����, ��� ������ ��� �� �����
-		case 4: dy = 0; dx = -speed;   break;//������� �������� �� ������� ��������� � �����������, ���� ������ ��������� �����, ��� ������ ��� �� �����
-		case 5: dy = 0; dx = -speed;   break;//������� �������� �� ������� ��������� � �����������, ���� ������ ��������� �����, ��� ������ ��� �� �����
-
+		if (direction == 0) {
+			dx = -speed; 
 		}
+		else {
+			dx = speed; 
+		}
+		dy = 0;
+		x += dx * time;
+		y += dy * time;
 
-		x += dx * time;//���� �������� ���� �� �
-		y += dy * time;//�� �
-
-		if (x <= 0) x = 1;// �������� ���� � ����� �����, ����� ��� ���������� ������ ��� �������� �� �������� �� ������ ����� � �� ���� ������
+		if (x <= 0) x = 1;
 		if (y <= 0) y = 1;
-		sprite.setPosition(x + w / 2, y + h / 2);//�������� ������� ����
+		sprite.setPosition(x + w / 2, y + h / 2);
 	}
 };
 
 
 
-class MovingPlatform : public Entity {//����� ���������� ���������
+class MovingPlatform : public Entity {
 public:
 	MovingPlatform(Image& image, String Name, Level& lvl, float X, float Y, int W, int H) :Entity(image, Name, X, Y, W, H) {
-		sprite.setTextureRect(IntRect(0, 0, W, H));//������������� 
-		dx = 0.08;//����������� ��������� �� �
+		sprite.setTextureRect(IntRect(0, 0, W, H));
+		dx = 0.08;
 	}
 
-	void update(float time, int shift, int level)//������� ���������� ���������.
+	void update(float time, int shift, int level)
 	{
-		x += dx * time;//���������� �������� �� �����������
-		moveTimer += time;//���������� ������
-		if (moveTimer > 2000) { dx *= -1; moveTimer = 0; }//���� ������ �������� 2 ���, �� �������� ����������� �������� ���������,� ������ ����������
-		sprite.setPosition(x + w / 2, y + h / 2);//������ ������� �������
+		x += dx * time;
+		moveTimer += time;
+		if (moveTimer > 2000) { dx *= -1; moveTimer = 0; }
+		sprite.setPosition(x + w / 2, y + h / 2);
 	}
 };
 
@@ -225,7 +215,7 @@ class Enemy :public Entity {
 public:
 	float CurrentFrame = 0;
 	Enemy(Image& image, String Name, Level& lvl, float X, float Y, int W, int H) :Entity(image, Name, X, Y, W, H) {
-		obj = lvl.GetObjects("solidEnemy");//��������������.�������� ������ ������� ��� �������������� ����� � ������
+		obj = lvl.GetObjects("solidEnemy");
 		if (name == "easyEnemy") {
 			sprite.setTextureRect(IntRect(0, 0, w, h));
 			sprite.setScale(-2.0f,2.0f);
@@ -239,15 +229,14 @@ public:
 			health = 100;
 		}
 	}
-
 	void checkCollisionWithMap(float time,float Dx, float Dy)
 	{
 		for (int i = 0; i < obj.size(); i++){
 			if (getRect().intersects(obj[i].rect))
 			{
-				if (obj[i].name == "solidEnemy")//���� ��������� �����������
+				if (obj[i].name == "solidEnemy")
 				{
-					if (Dy > 0) { y = obj[i].rect.top - h;  dy = 0; onGround = true; }
+					if (Dy > 0) { y = obj[i].rect.top - h;  dy = 0; isGravity = true; }
 					if (Dy < 0) { y = obj[i].rect.top + obj[i].rect.height;   dy = 0; }
 					if (Dx > 0) { x = obj[i].rect.left - w;  dx = -0.1; sprite.scale(-1, 1); }
 					if (Dx < 0) { x = obj[i].rect.left + obj[i].rect.width; dx = 0.1; sprite.scale(-1,1 ); }
@@ -281,6 +270,16 @@ public:
 					CurrentFrame -= 4;
 				}
 				sprite.setTextureRect(IntRect(60 * int(CurrentFrame), 0, 60, 32)); break; }
+			case 4: {
+				if (CurrentFrame > 4) {
+					CurrentFrame -= 4;
+				}
+				sprite.setTextureRect(IntRect(64 * int(CurrentFrame), 20 + shift, 64, 60 + shift)); break; }
+			case 5: {
+				if (CurrentFrame > 6) {
+					CurrentFrame -= 6;
+				}
+				sprite.setTextureRect(IntRect(160 * int(CurrentFrame), 0, 160, 150)); break; }
 
 			}
 			sprite.move(-0.1 * time, 0);
@@ -302,77 +301,139 @@ public:
 	}
 };
 
-class magicFlowers :public Entity {//класс цветов
+class magicFlowers :public Entity {
 public:
 	magicFlowers(Image& image, String Name, Level& lvl, float X, float Y, int W, int H) :Entity(image, Name, X, Y, W, H) {
-		sprite.setTextureRect(IntRect(0, 0, W, H));//������������� 
-		sprite.setPosition(x + (w) / 2, y + (h)/2);//�������� ������� ����
+		sprite.setTextureRect(IntRect(0, 0, W, H)); 
+		sprite.setPosition(x + (w) / 2, y + (h)/2);
 		sprite.setScale(0.5f, 0.5f);
 	}
 
-	void update(float time, int shift, int level)//������� ���������� ���������.
+	void update(float time, int shift, int level)
 	{
 		if (health <= 0) { life = false; }
 	}
 };
-class powerFlowers :public Entity {//класс цветов
+class powerFlowers :public Entity {
 public:
 	powerFlowers(Image& image, String Name, Level& lvl, float X, float Y, int W, int H) :Entity(image, Name, X, Y, W, H) {
-		sprite.setTextureRect(IntRect(0, 0, W, H));//�������������
-		sprite.setPosition(x + w / 2, y + h / 2+20);//�������� ������� ���
+		sprite.setTextureRect(IntRect(0, 0, W, H));
+		sprite.setPosition(x + w / 2, y + h / 2+20);
 
 	};
 	void update(float time, int shift, int level) { if (health <= 0) { life = false; } };
 };
-class healthFlowers :public Entity {//класс цветов
+class healthFlowers :public Entity {
 public:
 	healthFlowers(Image& image, String Name, Level& lvl, float X, float Y, int W, int H) :Entity(image, Name, X, Y, W, H) {
-		sprite.setTextureRect(IntRect(0, 0, W, H));//������������� 
-		sprite.setPosition(x + w / 2, y + h  / 2);//�������� ������� ����
-		
+		sprite.setTextureRect(IntRect(0, 0, W, H));
+		sprite.setPosition(x + w / 2, y + h  / 2);
 		sprite.setScale(0.7f, 0.7f);
 	};
 	void update(float time,int shift, int level) { if (health <= 0) { life = false; } };
 };
 
-void changeLevel(Level& lvl, int& numberLevel) {
-	if (numberLevel == 1) { lvl.LoadFromFile("map/swampMap.tmx"); }
-	if (numberLevel == 2) { lvl.LoadFromFile("map/lakeMap.tmx"); }
-	if (numberLevel == 3) { lvl.LoadFromFile("map/homeMap.tmx"); }
+void nextLevel(Level& lvl, int& level) {
+	switch (level)
+	{ 
+	case 1: 
+		lvl.LoadFromFile("map/swampMap.tmx"); 
+		break;
+	case 2: 
+		lvl.LoadFromFile("map/lakeMap.tmx");  
+		break;
+	case 3: 
+		lvl.LoadFromFile("map/homeMap.tmx");  
+		break;
+	case 4: 
+		lvl.LoadFromFile("forestmap.tmx");  
+		break;
+	case 5: 
+		lvl.LoadFromFile("map/finallMap.tmx");  
+		break;
+
+	default:
+		break;
+	}
 }
 
 enum stateOfGame {next,reload,ex};
+
 enum stateOfGame startGame(RenderWindow& window, int& numberLevel) {
-	//menu(window);
+	
 	view.reset(sf::FloatRect(0, 0, 1376, 768));
 	Level lvl;
-	changeLevel(lvl, numberLevel);//для загрузки карты для нужного уровня
+	nextLevel(lvl, numberLevel);
 	Image easyEnemyImage;
 	Image movePlatformImage;
 	Image magicFImage;
 	magicFImage.loadFromFile("images/magicF.png");
 	Image healthFImage;
 	healthFImage.loadFromFile("images/healthF.png");
-	healthFImage.createMaskFromColor(Color(255, 255, 255));
 	Image powerFImage;
 	powerFImage.loadFromFile("images/powerF.png");
 
-	Music music;//������� ������ ������
+	Music music;
+	music.setVolume(25);
 
-	Music winMusic;
-	Image  MagicPowerImage;//����������� ��� ����
-	MagicPowerImage.loadFromFile("images/MagicEffect2.png");//��������� �������� � ������ �����������
+	SoundBuffer winBuffer;
+	winBuffer.loadFromFile("sound/goodEnd.ogg");
+	Sound win(winBuffer);
 
-	Bar lifeBarPlayer("images/HealthBar/1.png", 202, 667);//��������� ������ ������� ��������
-	Bar magicBarPlayer("images/MagicBar/1.png", 202, 667);//��������� ������ ������� ��������
-	Bar powerBarPlayer("images/FlowerBar/7.png", 202, 667);//��������� ������ ������� ��������
-	Sound shoot;
-	Sound ghostScream;
-	Sound ghostDeath;
+	SoundBuffer ghostScreamtBuffer;
+	ghostScreamtBuffer.loadFromFile("images/enemies/swampGhost/ghostScream.ogg");
+	Sound ghostScream(ghostScreamtBuffer);
+	ghostScream.setVolume(15);
 
-	
-	
 
+	SoundBuffer ghostDeathBuffer;
+	ghostDeathBuffer.loadFromFile("images/enemies/swampGhost/ghostDeath.ogg");
+	Sound ghostDeath(ghostDeathBuffer);
+	ghostDeath.setVolume(15);
+
+	SoundBuffer dogScreamtBuffer;
+	dogScreamtBuffer.loadFromFile("images/enemies/swampGhost/ghostScream.ogg");
+	Sound dogScream(dogScreamtBuffer);
+	dogScream.setVolume(15);
+
+	SoundBuffer dogDeathBuffer;
+	dogDeathBuffer.loadFromFile("images/enemies/swampGhost/ghostDeath.ogg");
+	Sound dogDeath(dogDeathBuffer);
+	dogDeath.setVolume(15);
+
+
+	SoundBuffer shootBuffer;
+	shootBuffer.loadFromFile("sound/power.ogg");
+	Sound shoot(shootBuffer);
+	shoot.setVolume(15);
+
+	SoundBuffer jumpBuffer;
+	jumpBuffer.loadFromFile("sound/jump.ogg");
+	Sound jump(jumpBuffer);
+	jump.setVolume(15);
+
+	SoundBuffer deathBuffer;
+	deathBuffer.loadFromFile("sound/death.ogg");
+	Sound death(deathBuffer);
+	death.setVolume(15);
+
+	SoundBuffer flowerBuffer;
+	flowerBuffer.loadFromFile("sound/flowerGathering.ogg");
+	Sound flower(flowerBuffer);
+	flower.setVolume(15);
+
+	Image  MagicPowerImage;
+	MagicPowerImage.loadFromFile("images/MagicEffect2.png");
+	String nameOfBar;
+	if (numberLevel == 5) {
+		nameOfBar = "images/DemonHealthBar/1.png";
+	}
+	else { 
+		nameOfBar = "images/FlowerBar/7.png"; 
+	}
+	Bar lifeBarPlayer("images/HealthBar/1.png", 202, 667);
+	Bar magicBarPlayer("images/MagicBar/1.png", 202, 667);
+	Bar powerBarPlayer(nameOfBar, 202, 667);
 	int wEnemy, Henemy;
 	std::list<Entity*>  entities;
 	std::list<Entity*>::iterator it;
@@ -382,32 +443,10 @@ enum stateOfGame startGame(RenderWindow& window, int& numberLevel) {
 	switch (numberLevel)
 	{
 	   case 1: {
-		
 			easyEnemyImage.loadFromFile("images/enemies/swampGhost/ghost.png");
-			easyEnemyImage.createMaskFromColor(Color(255, 0, 0));
-
-		
 			movePlatformImage.loadFromFile("images/MovingPlatform.png");
-
-		
-			SoundBuffer shootBuffer;
-			shootBuffer.loadFromFile("sound/shoot.ogg");
-			Sound shoot(shootBuffer);
-
-
-			SoundBuffer ghostScreamtBuffer;
-			ghostScreamtBuffer.loadFromFile("images/enemies/swampGhost/ghostScream.ogg");
-			Sound ghostScream(ghostScreamtBuffer);
-
-
-			SoundBuffer ghostDeathBuffer;
-			ghostDeathBuffer.loadFromFile("images/enemies/swampGhost/ghostDeath.ogg");
-			Sound ghostDeath(ghostDeathBuffer);
-
-
 			music.openFromFile("sound/swamp.ogg");
-			music.play();
-			music.setVolume(15); 
+			music.play(); 
 			Henemy = 80;
 			wEnemy = 40;
 			break;
@@ -415,71 +454,45 @@ enum stateOfGame startGame(RenderWindow& window, int& numberLevel) {
 	   case 2:
 	   {
 		   easyEnemyImage.loadFromFile("images/wizard.png");
-		   easyEnemyImage.createMaskFromColor(Color(255, 0, 0));
-
-
 		   movePlatformImage.loadFromFile("images/MovingPlatform2.png");
-
-
-		   SoundBuffer shootBuffer;
-		   shootBuffer.loadFromFile("sound/shoot.ogg");
-		   Sound shoot(shootBuffer);
-
-
-		   SoundBuffer ghostScreamtBuffer;
-		   ghostScreamtBuffer.loadFromFile("images/enemies/skeleton/attackSkel.ogg");
-		   Sound ghostScream(ghostScreamtBuffer);
-
-
-		   SoundBuffer ghostDeathBuffer;
-		   ghostDeathBuffer.loadFromFile("images/enemies/skeleton/skelletonDeath.ogg");
-		   Sound ghostDeath(ghostDeathBuffer);
-
-		   
-		   music.openFromFile("sound/forest.ogg");//��������� ����
-		   music.play();//������������� ������
-
-		   music.setVolume(15);
+		   music.openFromFile("sound/lake.ogg");
+		   music.play();
 		   Henemy = 80;
 		   wEnemy = 90;
 		   break;
 	    }
 	   case 3: {
 		   easyEnemyImage.loadFromFile("images/enemies/dog/dog.png");
-		   easyEnemyImage.createMaskFromColor(Color(255, 0, 0));
-
-
 		   movePlatformImage.loadFromFile("images/MovingPlatform3.png");
-
-
-		   SoundBuffer shootBuffer;
-		   shootBuffer.loadFromFile("sound/shoot.ogg");
-		   Sound shoot(shootBuffer);
-
-
-		   SoundBuffer ghostScreamtBuffer;
-		   ghostScreamtBuffer.loadFromFile("images/enemies/dog/dogGrowl.ogg");
-		   Sound ghostScream(ghostScreamtBuffer);
-
-
-		   SoundBuffer ghostDeathBuffer;
-		   ghostDeathBuffer.loadFromFile("images/enemies/dog/dogDeath.ogg");
-		   Sound ghostDeath(ghostDeathBuffer);
-
-
 		   Henemy = 20;
 		   wEnemy = 40;
 		   music.openFromFile("sound/home.ogg");
 		   music.play();
-		   music.setVolume(15);
-
-		  
+		   break;
+	   }
+	   case 4: {
+		   easyEnemyImage.loadFromFile("images/enemies/swampGhost/ghost.png");
+		   movePlatformImage.loadFromFile("images/MovingPlatform.png");
+		   Henemy = 20;
+		   wEnemy = 40;
+		   music.openFromFile("sound/forest.ogg");
+		   music.play();
+		   break;
+	   }
+	   case 5: {
+		   easyEnemyImage.loadFromFile("images/demon-attack/demon.png");
+		   movePlatformImage.loadFromFile("images/MovingPlatform3.png");
+		   Henemy = 140;
+		   wEnemy = 150;
+		   music.openFromFile("sound/cemetery.ogg");
+		   music.play();
 		   break;
 	   }
 	default:
 		break;
 	}
 	
+
 	Image heroImage;
 	heroImage.loadFromFile("images/girlCharacter.png");
 	Object player = lvl.GetObject("player");
@@ -489,38 +502,37 @@ enum stateOfGame startGame(RenderWindow& window, int& numberLevel) {
 	Player p(heroImage, "Player1", lvl, player.rect.left, player.rect.top, 60,60);
 	
 
-	for (int i = 0; i < e.size(); i++) {//���������� �� ��������� ����� �������(� ������ �� ������)
-		entities.push_back(new Enemy(easyEnemyImage, "easyEnemy", lvl, e[i].rect.left, e[i].rect.top, wEnemy, Henemy));//� ���������� � ������ ���� ����� ������ � �����
-		e[i].rect.left;//����� �
-		e[i].rect.top;//����� Y
+	for (int i = 0; i < e.size(); i++) {
+		entities.push_back(new Enemy(easyEnemyImage, "easyEnemy", lvl, e[i].rect.left, e[i].rect.top, wEnemy, Henemy));
+		e[i].rect.left;
+		e[i].rect.top;
 	}
 
 	if (numberLevel == 3) {
 		Image middleEnemyImage;
 		middleEnemyImage.loadFromFile("images/enemies/skeleton/skelet.png");
-		e = lvl.GetObjects("middleEnemy");//�������� ��� ��������� � ������ 
-		for (int i = 0; i < e.size(); i++) {//���������� �� ��������� ����� �������(� ������ �� ������)
-			entities.push_back(new Enemy(middleEnemyImage, "middleEnemy", lvl, e[i].rect.left, e[i].rect.top, 40, 32));//� ���������� � ������ ���� ����� ������ � �����
-			e[i].rect.left;//����� �
-			e[i].rect.top;//����� Y
+		e = lvl.GetObjects("middleEnemy");
+		for (int i = 0; i < e.size(); i++) {
+			entities.push_back(new Enemy(middleEnemyImage, "middleEnemy", lvl, e[i].rect.left, e[i].rect.top, 40, 32));
+			e[i].rect.left;
+			e[i].rect.top;
 		}
 		
 	}
-	e = lvl.GetObjects("movingPlatform");//�������� ��� ��������� � ������ 
+	e = lvl.GetObjects("movingPlatform");
 	for (int i = 0; i < e.size(); i++)
-		entities.push_back(new MovingPlatform(movePlatformImage, "movingPlatform", lvl, e[i].rect.left, e[i].rect.top, 95, 22));//���������� ��������� � ������.�������� ����������� ��� ������� ���������� ��������� (����� �� tmx �����), � ��� �� �������
+		entities.push_back(new MovingPlatform(movePlatformImage, "movingPlatform", lvl, e[i].rect.left, e[i].rect.top, 95, 22));
 
-	e = lvl.GetObjects("magicF");//�������� ��� ��������� � ������ 
+	e = lvl.GetObjects("magicF");
 	for (int i = 0; i < e.size(); i++)
-		entities.push_back(new magicFlowers(magicFImage, "magicF", lvl, e[i].rect.left, e[i].rect.top, 100, 100));//���������� ��������� � ������.�������� ����������� ��� ������� ���������� ��������� (����� �� tmx �����), � ��� �� �������
+		entities.push_back(new magicFlowers(magicFImage, "magicF", lvl, e[i].rect.left, e[i].rect.top, 100, 100));
 
-	e = lvl.GetObjects("healthF");//�������� ��� ��������� � ������ 
+	e = lvl.GetObjects("healthF");
 	for (int i = 0; i < e.size(); i++)
-		entities.push_back(new healthFlowers(healthFImage, "healthF", lvl, e[i].rect.left, e[i].rect.top, 75, 101));//���������� ��������� � ������.�������� ����������� ��� ������� ���������� ��������� (����� �� tmx �����), � ��� �� �������
-
-	e = lvl.GetObjects("powerF");//�������� ��� ��������� � ������ 
+		entities.push_back(new healthFlowers(healthFImage, "healthF", lvl, e[i].rect.left, e[i].rect.top, 75, 101));
+	e = lvl.GetObjects("powerF");
 	for (int i = 0; i < e.size(); i++)
-		entities.push_back(new powerFlowers(powerFImage, "powerF", lvl, e[i].rect.left, e[i].rect.top, 31, 50 ));//���������� ��������� � ������.�������� ����������� ��� ������� ���������� ��������� (����� �� tmx �����), � ��� �� �������
+		entities.push_back(new powerFlowers(powerFImage, "powerF", lvl, e[i].rect.left, e[i].rect.top, 31, 50 ));
 
 	int shift = 0;
 	Clock clock;
@@ -553,43 +565,43 @@ enum stateOfGame startGame(RenderWindow& window, int& numberLevel) {
 
 		}
 
-		for (it = entities.begin(); it != entities.end(); it++)//���������� �� ��-��� ������
+		for (it = entities.begin(); it != entities.end(); it++)
 		{
-			if (((*it)->name == "movingPlatform") && ((*it)->getRect().intersects(p.getRect())))//���� ����� ���������� � �������� ������ � ��� ����� ������� movingplatform
+			if (((*it)->name == "movingPlatform") && ((*it)->getRect().intersects(p.getRect())))
 			{
 				Entity* movPlat = *it;
-				if ((p.dy > 0) || (p.onGround == false))//��� ���� ����� ��������� � ��������� ����� ������, �.� ������ ����
-					if (p.y + p.h < movPlat->y + movPlat->h)//���� ����� ��������� ���� ���������, �.� ��� ��� ���� ������� (�� �� ��� ��������� ��� �� ���������� � ����������)
+				if ((p.dy > 0) || (p.isGravity == false))
+					if (p.y + p.h < movPlat->y + movPlat->h)
 					{
-						p.y = movPlat->y - p.h + 3; p.x += movPlat->dx * time; p.dy = 0; p.onGround = true; // �� ����������� ������ ���, ����� �� ��� �� ����� �� ���������
+						p.y = movPlat->y - p.h + 3; p.x += movPlat->dx * time; p.dy = 0; p.isGravity = true;
 					}
 
 			}
 			if (((*it)->getRect().intersects(p.getRect())) && ((*it)->name == "easyEnemy"))
 			{
-				if ((p.dy > 0) && (p.onGround == false)) {
+				if ((p.dy > 0) && (p.isGravity == false)) {
 					p.dy = -0.2;
 					(*it)->health -= 50;
 					ghostDeath.play();
 					(*it)->shift = 120;
 				    (*it)->update(time,shift,numberLevel);
 					
-				}//если прыгнули на врага,то даем врагу скорость 0,отпрыгиваем от него чуть вверх,даем ему здоровье 0
+				}
 				else {
 					ghostScream.play();
 					(*it)->shift = 60;
-					p.health -= 10;	//иначе враг подошел к нам сбоку и нанес урон
+					p.health -= 10;	
 				}
-				if ((*it)->dx > 0)//���� ���� ���� ������
+				if ((*it)->dx > 0)
 				{
 					(*it)->x = p.x - (*it)->w;
 					(*it)->dx *= -1;
 					(*it)->sprite.scale(-1, 1);
 				}
-				if ((*it)->dx < 0)//���� ���� ���� �����
+				if ((*it)->dx < 0)
 				{
-					(*it)->x = p.x + p.w; //���������� - ����������� ������
-					(*it)->dx *= -1;//�������������
+					(*it)->x = p.x + p.w; 
+					(*it)->dx *= -1;
 					(*it)->sprite.scale(-1, 1);
 				}
 				if (p.dx < 0) {
@@ -602,29 +614,29 @@ enum stateOfGame startGame(RenderWindow& window, int& numberLevel) {
 			}
 			if (((*it)->getRect().intersects(p.getRect())) && ((*it)->name == "middleEnemy"))
 			{
-				if ((p.dy > 0) && (p.onGround == false)) {
+				if ((p.dy > 0) && (p.isGravity == false)) {
 					p.dy = -0.2;
 					(*it)->health -= 20;
 					ghostDeath.play();
 					(*it)->shift = 120;
 					(*it)->update(time, shift, numberLevel);
 
-				}//если прыгнули на врага,то даем врагу скорость 0,отпрыгиваем от него чуть вверх,даем ему здоровье 0
+				}
 				else {
 					ghostScream.play();
 					(*it)->shift = 60;
-					p.health -= 20;	//иначе враг подошел к нам сбоку и нанес урон
+					p.health -= 20;
 				}
-				if ((*it)->dx > 0)//���� ���� ���� ������
+				if ((*it)->dx > 0)
 				{
 					(*it)->x = p.x - (*it)->w;
 					(*it)->dx *= -1;
 					(*it)->sprite.scale(-1, 1);
 				}
-				if ((*it)->dx < 0)//���� ���� ���� �����
+				if ((*it)->dx < 0)
 				{
-					(*it)->x = p.x + p.w; //���������� - ����������� ������
-					(*it)->dx *= -1;//�������������
+					(*it)->x = p.x + p.w; 
+					(*it)->dx *= -1;
 					(*it)->sprite.scale(-1, 1);
 				}
 				if (p.dx < 0) {
@@ -636,24 +648,18 @@ enum stateOfGame startGame(RenderWindow& window, int& numberLevel) {
 
 			}
 			
-			if ((*it)->getRect().intersects(p.getRect()))//если прямоугольник спрайта объекта пересекается с игроком
+			if ((*it)->getRect().intersects(p.getRect()))
 			{
-				if ((*it)->name == "EasyEnemy") {//и при этом имя объекта EasyEnemy,то..
-					if ((*it)->dx > 0)//если враг идет вправо
+				if ((*it)->name == "EasyEnemy") {
+					if ((*it)->dx > 0)
 					{
-						std::cout << "(*it)->x" << (*it)->x << "\n";//коорд игрока
-						std::cout << "p.x" << p.x << "\n\n";//коорд врага
-
-						(*it)->x = p.x - (*it)->w; //отталкиваем его от игрока влево (впритык)
-						(*it)->dx = 0;//останавливаем
-
-						std::cout << "new (*it)->x" << (*it)->x << "\n";//новая коорд врага
-						std::cout << "new p.x" << p.x << "\n\n";//новая коорд игрока (останется прежней)
+						(*it)->x = p.x - (*it)->w; 
+						(*it)->dx = 0;
 					}
-					if ((*it)->dx < 0)//если враг идет влево
+					if ((*it)->dx < 0)
 					{
-						(*it)->x = p.x + p.w; //аналогично - отталкиваем вправо
-						(*it)->dx = 0;//останавливаем
+						(*it)->x = p.x + p.w; 
+						(*it)->dx = 0;
 					}
 				}
 			}
@@ -661,7 +667,7 @@ enum stateOfGame startGame(RenderWindow& window, int& numberLevel) {
 			for (it2 = entities.begin(); it2 != entities.end(); it2++)
 			{
 				if ((*it)->getRect() != (*it2)->getRect())
-					if (((*it)->getRect().intersects((*it2)->getRect())) && ((*it)->name == "easyEnemy") && ((*it2)->name == "MagicPower"))//���� ����������� ��� ������� � ��� �����
+					if (((*it)->getRect().intersects((*it2)->getRect())) && ((*it)->name == "easyEnemy") && ((*it2)->name == "MagicPower"))
 					{
 						
 							
@@ -679,39 +685,50 @@ enum stateOfGame startGame(RenderWindow& window, int& numberLevel) {
 			{
 				p.magic += 10;
 				(*it)->life = false;
+				flower.play();
 			}
 			if (((*it)->getRect().intersects(p.getRect())) && ((*it)->name == "healthF"))
 			{
 				p.health += 10;
 				(*it)->life = false;
+				flower.play();
 			}
 			if (((*it)->getRect().intersects(p.getRect())) && ((*it)->name == "powerF"))
 			{
 				p.power += 20;
 				(*it)->life = false;
+				flower.play();
 			}
 			for (it2 = entities.begin(); it2 != entities.end(); it2++)
 			{
 				if ((*it)->getRect() != (*it2)->getRect())
-					if (((*it)->getRect().intersects((*it2)->getRect())) && ((*it)->name == "easyEnemy") && ((*it2)->name == "easyEnemy"))//���� ����������� ��� ������� � ��� �����
+					if (((*it)->getRect().intersects((*it2)->getRect())) && ((*it)->name == "easyEnemy") && ((*it2)->name == "easyEnemy"))
 					{
 						(*it)->dx *= -1;
 						(*it)->sprite.scale(-1, 1);
 					}
 					
 			}
-
-
+			if (p.health == 0) { death.play(); }
+			if (Keyboard::isKeyPressed(Keyboard::Up)) { jump.play(); }
+			if (p.power == 100) { win.play(); }
 
 		}
 		lifeBarPlayer.update(p.health,1.1,0);
 		magicBarPlayer.update(p.magic,1.1,0);
-		powerBarPlayer.update(p.power,0.92,0);
+		if (numberLevel == 5) {
+			powerBarPlayer.update(100, 1.1, 0);
+		}
+		else {
+			powerBarPlayer.update(p.power, 0.92, 0);
+		}
+		
 		if ((Keyboard::isKeyPressed(Keyboard::T)) || (p.power == 100)) {
+			win.play();
 			lvl.levelNumber++; 
 			return next; }
-		if ((Keyboard::isKeyPressed(Keyboard::Tab))|| (p.health == 0)) { return reload; }//если таб, то перезагружаем игру
-		if (Keyboard::isKeyPressed(Keyboard::Escape)) { return ex; }//если эскейп, то выходим из игры
+		if ((Keyboard::isKeyPressed(Keyboard::Tab)) || (p.health == 0)) { death.play(); return reload; }
+		if (Keyboard::isKeyPressed(Keyboard::Escape)) { return ex; }
 
 		p.CurrentFrame += 0.005 * time;
 		p.update(time,0,numberLevel);
@@ -742,11 +759,9 @@ enum stateOfGame startGame(RenderWindow& window, int& numberLevel) {
 		for (it = entities.begin(); it != entities.end(); it++) {
 			window.draw((*it)->sprite);
 		}
-		lifeBarPlayer.draw(window, 0,p.health+10,1.1);//������ ������� ��������
+		lifeBarPlayer.draw(window, 0,p.health+10,1.1);
 		magicBarPlayer.draw(window, 40, p.magic+10,1.1);
 		powerBarPlayer.draw(window, 80, p.power,0.92);
-
-		//window.draw(easyEnemy.sprite);//������ ������� ��������� ������ �����
 		window.draw(p.sprite);
 		window.display();
 

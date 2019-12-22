@@ -31,11 +31,9 @@ void Bar::draw(RenderWindow& window, int shift,int k, float type )
 	if (shift == 80) {
 		l = 10;
 	}
-	if (k >= 0) {
-		if (k < max) {
+	if ((k >= 0) && (k < max)) {
 			s.setPosition(center.x - size.x / 2 + 10, center.y - size.y / 2 + 10 + shift);//позиция на экране
 			bar.setPosition(center.x - size.x / 2 + (90 - ((50 - k) * type))-l, center.y - size.y / 2 + 25 + shift);
-		}
 	}
 	window.draw(s);//сначала рисуем полоску здоровья
 	window.draw(bar);//поверх неё уже черный прямоугольник, он как бы покрывает её
