@@ -148,12 +148,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bar.h" />
-    <ClInclude Include="Bullet.h" />
-    <ClInclude Include="game.h" />
+    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Entity.h" />
+    <ClInclude Include="Flowers.h" />
     <ClInclude Include="level.h" />
+    <ClInclude Include="MagicPower.h" />
+    <ClInclude Include="map.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="menu.h" />
-    <ClInclude Include="mission.h" />
+    <ClInclude Include="MovingPlatform.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="TinyXML\tinystr.h" />
     <ClInclude Include="TinyXML\tinyxml.h" />
     <ClInclude Include="view.h" />

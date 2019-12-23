@@ -16,6 +16,9 @@ Bar::Bar(String name, float h, float w)
 
 void Bar::update(int k, float type, int shiftBar)// k-текущее здоровье
 {
+	if (shiftBar == 1) {
+		k /= 30;
+	}
 	if ((k >= 0) && (k < max))
 	{
 		bar.setSize(Vector2f((max - k) * type, 20));//если не отрицательно и при этом меньше максимума, то устанавливаем новое значение (новый размер) для черного прямоугольника
@@ -23,7 +26,7 @@ void Bar::update(int k, float type, int shiftBar)// k-текущее здоровье
 	}
 }
 
-void Bar::draw(RenderWindow& window, int shift,int k, float type )
+void Bar::draw(RenderWindow& window, int shift,int k, float type, float typeOfPower)
 {
 	Vector2f center = window.getView().getCenter();
 	Vector2f size = window.getView().getSize();
@@ -31,7 +34,12 @@ void Bar::draw(RenderWindow& window, int shift,int k, float type )
 	if (shift == 80) {
 		l = 10;
 	}
-	if ((k >= 0) && (k < max)) {
+	if (typeOfPower == 1) {
+		k /= 30;
+		l = -11;
+	}
+	
+	if ((k >= 0) && (k <= max)) {
 			s.setPosition(center.x - size.x / 2 + 10, center.y - size.y / 2 + 10 + shift);//позиция на экране
 			bar.setPosition(center.x - size.x / 2 + (90 - ((50 - k) * type))-l, center.y - size.y / 2 + 25 + shift);
 	}

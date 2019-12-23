@@ -1,349 +1,625 @@
-#ifndef LEVEL_H
-#define LEVEL_H
-
-#include <string>
+п»ї#include <SFML/Audio.hpp>
+#include "view.h"
+#include "map.h"
 #include <vector>
-#include <map>
-#include <SFML/Graphics.hpp>
-#include <iostream>
+#include <list>
 #include "TinyXML/tinyxml.h"
 
-struct Object
-{
-	int GetPropertyInt(std::string name);//номер свойства объекта в нашем списке
-	float GetPropertyFloat(std::string name);
-	std::string GetPropertyString(std::string name);
+#include "Bar.h"
+#include "Entity.h"
+#include "Player.h"
+#include "Flowers.h"
+#include "MagicPower.h"
+#include "MovingPlatform.h"
+#include "Enemy.h"
 
-	std::string name;//объявили переменную name типа string
-	std::string type;//а здесь переменную type типа string
-	sf::Rect<float> rect;//тип Rect с нецелыми значениями
-	std::map<std::string, std::string> properties;//создаём ассоциатиный массив. ключ - строковый тип, значение - строковый
+using namespace sf;
 
-	sf::Sprite sprite;//объявили спрайт
-};
-
-struct Layer//слои
-{
-	int opacity;//непрозрачность слоя
-	std::vector<sf::Sprite> tiles;//закидываем в вектор тайлы
-};
-
-class Level//главный класс - уровень
-{
-public:
-	int levelNumber;//номер уровня
-	bool LoadFromFile(std::string filename);//возвращает false если не получилось загрузить
-	Object GetObject(std::string name);
-	std::vector<Object> GetObjects(std::string name);//выдаем объект в наш уровень
-	std::vector<Object> GetAllObjects();//выдаем все объекты в наш уровень
-	void Draw(sf::RenderWindow& window);//рисуем в окно
-	sf::Vector2i GetTileSize();//получаем размер тайла
-
-
-private:
-	int width, height, tileWidth, tileHeight;//в tmx файле width height в начале,затем размер тайла
-	int firstTileID;//получаем айди первого тайла
-	sf::Rect<float> drawingBounds;//размер части карты которую рисуем
-	sf::Texture tilesetImage;//текстура карты
-	std::vector<Object> objects;//массив типа Объекты, который мы создали
-	std::vector<Layer> layers;
-
-
-};
-
-///////////////////////////////////////
-
-
-int Object::GetPropertyInt(std::string name)//возвращаем номер свойства в нашем списке
-{
-	return atoi(properties[name].c_str());
-}
-
-float Object::GetPropertyFloat(std::string name)
-{
-	return strtod(properties[name].c_str(), NULL);
-}
-
-std::string Object::GetPropertyString(std::string name)//получить имя в виде строки.вроде понятно
-{
-	return properties[name];
-}
-
-bool Level::LoadFromFile(std::string filename)//двоеточия-обращение к методам класса вне класса 
-{
-	TiXmlDocument levelFile(filename.c_str());//загружаем файл в TiXmlDocument
-
-	// загружаем XML-карту
-	if (!levelFile.LoadFile())//если не удалось загрузить карту
+void nextLevel(Level& lvl, int& level) {
+	switch (level)
 	{
-		std::cout << "Loading level \"" << filename << "\" failed." << std::endl;//выдаем ошибку
-		return false;
+	case 1:
+		lvl.LoadFromFile("map/swampMap.tmx");
+		break;
+	case 2:
+		lvl.LoadFromFile("map/lakeMap.tmx");
+		break;
+	case 3:
+		lvl.LoadFromFile("map/homeMap.tmx");
+		break;
+	case 4:
+		lvl.LoadFromFile("map/forestmap.tmx");
+		break;
+	case 5:
+		lvl.LoadFromFile("map/finallMap.tmx");
+		break;
+
+	default:
+		break;
+	}
+}
+
+enum stateOfGame { next, reload, ex, loadMenu};
+
+enum stateOfGame downloadLevel(RenderWindow& window, int& level) {
+
+	view.reset(sf::FloatRect(0, 0, 1376, 768));
+	Level lvl;
+	nextLevel(lvl, level);
+	Image easyEnemyImage;
+	Image movePlatformImage;
+	Image magicFImage;
+	magicFImage.loadFromFile("images/flowers/magicF.png");
+	Image healthFImage;
+	healthFImage.loadFromFile("images/flowers/healthF.png");
+	Image powerFImage;
+	powerFImage.loadFromFile("images/flowers/powerF.png");
+
+	Music music;
+	music.setVolume(25);
+
+	SoundBuffer winBuffer;
+	winBuffer.loadFromFile("sound/goodEnd.ogg");
+	Sound win(winBuffer);
+
+	SoundBuffer ghostScreamtBuffer;
+	ghostScreamtBuffer.loadFromFile("sound/ghostScream.ogg");
+	Sound ghostScream(ghostScreamtBuffer);
+	ghostScream.setVolume(15);
+
+	SoundBuffer ghostDeathBuffer;
+	ghostDeathBuffer.loadFromFile("sound/ghostDeath.ogg");
+	Sound ghostDeath(ghostDeathBuffer);
+	ghostDeath.setVolume(15);
+
+	SoundBuffer dogScreamtBuffer;
+	dogScreamtBuffer.loadFromFile("sound/dogGrowl.ogg");
+	Sound dogScream(dogScreamtBuffer);
+	dogScream.setVolume(15);
+
+	SoundBuffer dogDeathBuffer;
+	dogDeathBuffer.loadFromFile("sound/dogDeath.ogg");
+	Sound dogDeath(dogDeathBuffer);
+	dogDeath.setVolume(15);
+
+	SoundBuffer shootBuffer;
+	shootBuffer.loadFromFile("sound/power.ogg");
+	Sound shoot(shootBuffer);
+	shoot.setVolume(15);
+
+	SoundBuffer jumpBuffer;
+	jumpBuffer.loadFromFile("sound/jump.ogg");
+	Sound jump(jumpBuffer);
+	jump.setVolume(15);
+
+	SoundBuffer deathBuffer;
+	deathBuffer.loadFromFile("sound/death.ogg");
+	Sound death(deathBuffer);
+	death.setVolume(15);
+
+	SoundBuffer deathDemonBuffer;
+	deathDemonBuffer.loadFromFile("sound/demonDeath.ogg");
+	Sound deathDemon(deathDemonBuffer);
+	deathDemon.setVolume(15);
+
+	SoundBuffer skeletDeathBuffer;
+	skeletDeathBuffer.loadFromFile("sound/skelletonDeath.ogg");
+	Sound skeletDeath(skeletDeathBuffer);
+	skeletDeath.setVolume(15);
+
+	SoundBuffer skeletBuffer;
+	skeletBuffer.loadFromFile("sound/AttackSkel.ogg");
+	Sound  skelet(skeletBuffer);
+	skelet.setVolume(15);
+
+	SoundBuffer demonBuffer;
+	demonBuffer.loadFromFile("sound/demonAttack.ogg");
+	Sound demon(demonBuffer);
+	demon.setVolume(15);
+
+
+	SoundBuffer flowerBuffer;
+	flowerBuffer.loadFromFile("sound/flowerGathering.ogg");
+	Sound flower(flowerBuffer);
+	flower.setVolume(15);
+
+	Image middleEnemyImage;
+	Image hardEnemyImage;
+	Image bossImage;
+
+	Image  MagicPowerImage;
+	MagicPowerImage.loadFromFile("images/hero/MagicEffect2.png");
+	String nameOfBar;
+	if (level == 5) {
+		nameOfBar = "images/DemonHealthBar/1.png";
+	}
+	else {
+		nameOfBar = "images/FlowerBar/7.png";
+	}
+	Bar lifeBarPlayer("images/HealthBar/1.png", 202, 667);
+	Bar magicBarPlayer("images/MagicBar/1.png", 202, 667);
+	Bar powerBarPlayer(nameOfBar, 202, 667);
+	int wEnemy, Henemy;
+	std::list<Entity*>  entities;
+	std::list<Entity*>::iterator it;
+	std::list<Entity*>::iterator it2;
+	std::vector<Object> e = lvl.GetObjects("easyEnemy");
+
+	switch (level)
+	{
+	case 1: {
+		easyEnemyImage.loadFromFile("images/enemies/swampGhost/ghost.png");
+		movePlatformImage.loadFromFile("images/platform/MovingPlatform.png");
+		music.openFromFile("sound/swamp.ogg");
+		music.play();
+		Henemy = 80;
+		wEnemy = 40;
+		break;
+	}
+	case 2:
+	{
+		easyEnemyImage.loadFromFile("images/enemies/wizard/wizard.png");
+		movePlatformImage.loadFromFile("images/platform/MovingPlatform2.png");
+		music.openFromFile("sound/lake.ogg");
+		music.play();
+		Henemy = 80;
+		wEnemy = 90;
+		break;
+	}
+	case 3: {
+		easyEnemyImage.loadFromFile("images/enemies/dog/dog.png");
+		middleEnemyImage.loadFromFile("images/enemies/skeleton/skelet.png");
+		movePlatformImage.loadFromFile("images/platform/MovingPlatform3.png");
+		Henemy = 20;
+		wEnemy = 40;
+		music.openFromFile("sound/home.ogg");
+		music.play();
+		break;
+	}
+	case 4: {
+		easyEnemyImage.loadFromFile("images/enemies/swampGhost/ghost.png");
+		middleEnemyImage.loadFromFile("images/enemies/wizard/wizard.png");
+		hardEnemyImage.loadFromFile("images/enemies/wizard/wizard.png");
+		movePlatformImage.loadFromFile("images/platform/MovingPlatform.png");
+		Henemy = 20;
+		wEnemy = 40;
+		music.openFromFile("sound/forest.ogg");
+		music.play();
+		break;
+	}
+	case 5: {
+		easyEnemyImage.loadFromFile("images/enemies/dog/dog.png");
+		middleEnemyImage.loadFromFile("images/enemies/wizard/wizard.png");
+		hardEnemyImage.loadFromFile("images/enemies/swampGhost/ghost.png");
+		bossImage.loadFromFile("images/enemies/demon/demon.png");
+		movePlatformImage.loadFromFile("images/platform/MovingPlatform3.png");
+		Henemy = 140;
+		wEnemy = 150;
+		music.openFromFile("sound/final.ogg");
+		music.play();
+		break;
+	}
+	default:
+		break;
 	}
 
-	// работаем с контейнером map
-	TiXmlElement* map;
-	map = levelFile.FirstChildElement("map");
 
-	// пример карты: <map version="1.0" orientation="orthogonal"
-	// width="10" height="10" tilewidth="34" tileheight="34">
-	width = atoi(map->Attribute("width"));//извлекаем из нашей карты ее свойства
-	height = atoi(map->Attribute("height"));//те свойства, которые задавали при работе в 
-	tileWidth = atoi(map->Attribute("tilewidth"));//тайлмап редакторе
-	tileHeight = atoi(map->Attribute("tileheight"));
+	Image heroImage;
+	heroImage.loadFromFile("images/hero/girlCharacter.png");
 
-	// Берем описание тайлсета и идентификатор первого тайла
-	TiXmlElement* tilesetElement;
-	tilesetElement = map->FirstChildElement("tileset");
-	firstTileID = atoi(tilesetElement->Attribute("firstgid"));
+	music.setLoop(true);
 
-	// source - путь до картинки в контейнере image
-	TiXmlElement* image;
-	image = tilesetElement->FirstChildElement("image");
-	std::string imagepath = image->Attribute("source");
 
-	// пытаемся загрузить тайлсет
-	sf::Image img;
+	Object player = lvl.GetObject("player");
+	Player p(heroImage, "Player", lvl, player.rect.left, player.rect.top, 60, 60);
 
-	if (!img.loadFromFile(imagepath))
-	{
-		std::cout << "Failed to load tile sheet." << std::endl;//если не удалось загрузить тайлсет-выводим ошибку в консоль
-		return false;
+
+	for (int i = 0; i < e.size(); i++) {
+		entities.push_back(new Enemy(easyEnemyImage, "easyEnemy", lvl, e[i].rect.left, e[i].rect.top, wEnemy, Henemy));
+		e[i].rect.left;
+		e[i].rect.top;
 	}
-
-
-	img.createMaskFromColor(sf::Color(255, 255, 255));//для маски цвета.сейчас нет маски
-	tilesetImage.loadFromImage(img);
-	tilesetImage.setSmooth(false);//сглаживание
-
-	// получаем количество столбцов и строк тайлсета
-	int columns = tilesetImage.getSize().x / tileWidth;
-	int rows = tilesetImage.getSize().y / tileHeight;
-
-	// вектор из прямоугольников изображений (TextureRect)
-	std::vector<sf::Rect<int>> subRects;
-
-	for (int y = 0; y < rows; y++)
-		for (int x = 0; x < columns; x++)
-		{
-			sf::Rect<int> rect;
-
-			rect.top = y * tileHeight;
-			rect.height = tileHeight;
-			rect.left = x * tileWidth;
-			rect.width = tileWidth;
-
-			subRects.push_back(rect);
+	if ((level == 3)||(level == 4)) {
+		e = lvl.GetObjects("middleEnemy");
+		for (int i = 0; i < e.size(); i++) {
+			entities.push_back(new Enemy(middleEnemyImage, "middleEnemy", lvl, e[i].rect.left, e[i].rect.top, wEnemy, Henemy));
+			e[i].rect.left;
+			e[i].rect.top;
 		}
 
-	// работа со слоями
-	TiXmlElement* layerElement;
-	layerElement = map->FirstChildElement("layer");
-	while (layerElement)
+	}
+	if ((level == 4)||(level == 5)) {
+		e = lvl.GetObjects("hardEnemy");
+		for (int i = 0; i < e.size(); i++) {
+			entities.push_back(new Enemy(hardEnemyImage, "hardEnemy", lvl, e[i].rect.left, e[i].rect.top, wEnemy, Henemy));
+			e[i].rect.left;
+			e[i].rect.top;
+		}
+	}
+	if (level == 5) {
+		e = lvl.GetObjects("boss");
+		entities.push_back(new Enemy(bossImage, "boss", lvl, e[0].rect.left, e[0].rect.top, wEnemy, Henemy));
+	}
+	int bossHealth = 3000;
+
+	e = lvl.GetObjects("movingPlatform");
+	for (int i = 0; i < e.size(); i++)
+		entities.push_back(new MovingPlatform(movePlatformImage, "movingPlatform", lvl, e[i].rect.left, e[i].rect.top, 95, 22));
+
+	e = lvl.GetObjects("magicF");
+	for (int i = 0; i < e.size(); i++)
+		entities.push_back(new magicFlowers(magicFImage, "magicF", lvl, e[i].rect.left, e[i].rect.top, 100, 100));
+
+	e = lvl.GetObjects("healthF");
+	for (int i = 0; i < e.size(); i++)
+		entities.push_back(new healthFlowers(healthFImage, "healthF", lvl, e[i].rect.left, e[i].rect.top, 75, 101));
+	e = lvl.GetObjects("powerF");
+	for (int i = 0; i < e.size(); i++)
+		entities.push_back(new powerFlowers(powerFImage, "powerF", lvl, e[i].rect.left, e[i].rect.top, 31, 50));
+
+	int shift = 0;
+	Clock clock;
+	while (window.isOpen())
 	{
-		Layer layer;
 
-		// если присутствует opacity, то задаем прозрачность слоя, иначе он полностью непрозрачен
-		if (layerElement->Attribute("opacity") != NULL)
+		float time = clock.getElapsedTime().asMicroseconds();
+		clock.restart();
+		time = time / 800;
+		Event event;
+		while (window.pollEvent(event))
 		{
-			float opacity = strtod(layerElement->Attribute("opacity"), NULL);
-			layer.opacity = 255 * opacity;
-		}
-		else
-		{
-			layer.opacity = 255;
-		}
+			if (event.type == sf::Event::Closed) {
+				window.close();
 
-		//  контейнер <data> 
-		TiXmlElement* layerDataElement;
-		layerDataElement = layerElement->FirstChildElement("data");
-
-		if (layerDataElement == NULL)
-		{
-			std::cout << "Bad map. No layer information found." << std::endl;
-		}
-
-		//  контейнер <tile> - описание тайлов каждого слоя
-		TiXmlElement* tileElement;
-		tileElement = layerDataElement->FirstChildElement("tile");
-
-		if (tileElement == NULL)
-		{
-			std::cout << "Bad map. No tile information found." << std::endl;
-			return false;
-		}
-
-		int x = 0;
-		int y = 0;
-
-		while (tileElement)
-		{
-			int tileGID = atoi(tileElement->Attribute("gid"));
-			int subRectToUse = tileGID - firstTileID;
-
-			// Устанавливаем TextureRect каждого тайла
-			if (subRectToUse >= 0)
+			}
+			if (p.magic != 0)
 			{
-				sf::Sprite sprite;
-				sprite.setTexture(tilesetImage);
-				sprite.setTextureRect(subRects[subRectToUse]);
-				sprite.setPosition(x * tileWidth, y * tileHeight);
-				sprite.setColor(sf::Color(255, 255, 255, layer.opacity));
 
-				layer.tiles.push_back(sprite);//закидываем в слой спрайты тайлов
+				if (p.isShoot == true) {
+					p.isShoot = false;
+					entities.push_back(new  MagicPower(MagicPowerImage, "MagicPower", lvl, p.x, p.y, 16, 16, p.state));
+					shoot.play();
+					p.magic -= 10;
+					p.isMagicPower = true;
+				}
 			}
 
-			tileElement = tileElement->NextSiblingElement("tile");
-
-			x++;
-			if (x >= width)
-			{
-				x = 0;
-				y++;
-				if (y >= height)
-					y = 0;
-			}
 		}
 
-		layers.push_back(layer);
-
-		layerElement = layerElement->NextSiblingElement("layer");
-	}
-
-	// работа с объектами
-	TiXmlElement* objectGroupElement;
-
-	// если есть слои объектов
-	if (map->FirstChildElement("objectgroup") != NULL)
-	{
-		objectGroupElement = map->FirstChildElement("objectgroup");
-		while (objectGroupElement)
+		for (it = entities.begin(); it != entities.end(); it++)
 		{
-			//  контейнер <object>
-			TiXmlElement* objectElement;
-			objectElement = objectGroupElement->FirstChildElement("object");
-
-			while (objectElement)
+			if (((*it)->name == "movingPlatform") && ((*it)->getRect().intersects(p.getRect())))
 			{
-				// получаем все данные - тип, имя, позиция, и тд
-				std::string objectType;
-				if (objectElement->Attribute("type") != NULL)
-				{
-					objectType = objectElement->Attribute("type");
-				}
-				std::string objectName;
-				if (objectElement->Attribute("name") != NULL)
-				{
-					objectName = objectElement->Attribute("name");
-				}
-				int x = atoi(objectElement->Attribute("x"));
-				int y = atoi(objectElement->Attribute("y"));
-
-				int width, height;
-
-				sf::Sprite sprite;
-				sprite.setTexture(tilesetImage);
-				sprite.setTextureRect(sf::Rect<int>(0, 0, 0, 0));
-				sprite.setPosition(x, y);
-
-				if (objectElement->Attribute("width") != NULL)
-				{
-					width = atoi(objectElement->Attribute("width"));
-					height = atoi(objectElement->Attribute("height"));
-				}
-				else
-				{
-					width = subRects[atoi(objectElement->Attribute("gid")) - firstTileID].width;
-					height = subRects[atoi(objectElement->Attribute("gid")) - firstTileID].height;
-					sprite.setTextureRect(subRects[atoi(objectElement->Attribute("gid")) - firstTileID]);
-				}
-
-				// экземпляр объекта
-				Object object;
-				object.name = objectName;
-				object.type = objectType;
-				object.sprite = sprite;
-
-				sf::Rect <float> objectRect;
-				objectRect.top = y;
-				objectRect.left = x;
-				objectRect.height = height;
-				objectRect.width = width;
-				object.rect = objectRect;
-
-				// "переменные" объекта
-				TiXmlElement* properties;
-				properties = objectElement->FirstChildElement("properties");
-				if (properties != NULL)
-				{
-					TiXmlElement* prop;
-					prop = properties->FirstChildElement("property");
-					if (prop != NULL)
+				Entity* movPlat = *it;
+				if ((p.dy > 0) || (p.isGravity == false))
+					if (p.y + p.h < movPlat->y + movPlat->h)
 					{
-						while (prop)
-						{
-							std::string propertyName = prop->Attribute("name");
-							std::string propertyValue = prop->Attribute("value");
+						p.y = movPlat->y - p.h + 3; p.x += movPlat->dx * time; p.dy = 0; p.isGravity = true;
+					}
 
-							object.properties[propertyName] = propertyValue;
-
-							prop = prop->NextSiblingElement("property");
+			}
+			if (((*it)->getRect().intersects(p.getRect())) && ((*it)->name == "easyEnemy"))
+			{
+				if ((p.dy > 0) && (p.isGravity == false)) {
+					p.dy = -0.2;
+					(*it)->health -= 50;
+					if ((level == 3) || (level == 5)) {
+						dogDeath.play();
+						(*it)->shift = 40;
+					}
+					else {
+						ghostDeath.play();
+						if (level == 2) {
+							(*it)->shift = 60;
+						}
+						else {
+							(*it)->shift = 120;
 						}
 					}
+					(*it)->update(time, shift, level);
+
+				}
+				else {
+					if ((level == 3) || (level == 5)) {
+						dogScream.play();
+						(*it)->shift = 40;
+					}
+					else {
+						ghostScream.play();
+						(*it)->shift = 60;
+					}
+					
+					p.health -= 5;
+				}
+				if ((*it)->dx > 0)
+				{
+					(*it)->x = p.x - (*it)->w;
+					(*it)->dx *= -1;
+					(*it)->sprite.scale(-1, 1);
+				}
+				if ((*it)->dx < 0)
+				{
+					(*it)->x = p.x + p.w;
+					(*it)->dx *= -1;
+					(*it)->sprite.scale(-1, 1);
+				}
+				if (p.dx < 0) {
+					p.x = (*it)->x + (*it)->w;
+				}
+				if (p.dx > 0) {
+					p.x = (*it)->x - p.w;
 				}
 
-
-				objects.push_back(object);
-
-				objectElement = objectElement->NextSiblingElement("object");
 			}
-			objectGroupElement = objectGroupElement->NextSiblingElement("objectgroup");
+			if (((*it)->getRect().intersects(p.getRect())) && ((*it)->name == "middleEnemy"))
+			{
+				if ((p.dy > 0) && (p.isGravity == false)) {
+					p.dy = -0.2;
+					(*it)->health -= 20;
+					if (level == 3) {
+						skeletDeath.play();
+						(*it)->shift = 120;
+					}
+					else {
+						ghostDeath.play();
+						(*it)->shift = 120;
+					}
+					
+					(*it)->update(time, shift, level);
+
+				}
+				else {
+					ghostScream.play();
+					(*it)->shift = 60;
+					p.health -= 10;
+				}
+				if ((*it)->dx > 0)
+				{
+					(*it)->x = p.x - (*it)->w;
+					(*it)->dx *= -1;
+					(*it)->sprite.scale(-1, 1);
+				}
+				if ((*it)->dx < 0)
+				{
+					(*it)->x = p.x + p.w;
+					(*it)->dx *= -1;
+					(*it)->sprite.scale(-1, 1);
+				}
+				if (p.dx < 0) {
+					p.x = (*it)->x + (*it)->w;
+				}
+				if (p.dx > 0) {
+					p.x = (*it)->x - p.w;
+				}
+
+			}
+			if (((*it)->getRect().intersects(p.getRect())) && ((*it)->name == "hardEnemy"))
+			{
+				if ((p.dy > 0) && (p.isGravity == false)) {
+					p.dy = -0.2;
+					(*it)->health -= 10;
+					ghostDeath.play();
+					(*it)->shift = 120;
+					(*it)->update(time, shift, level);
+
+				}
+				else {
+					ghostScream.play();
+					(*it)->shift = 60;
+					p.health -= 20;
+				}
+				if ((*it)->dx > 0)
+				{
+					(*it)->x = p.x - (*it)->w;
+					(*it)->dx *= -1;
+					(*it)->sprite.scale(-1, 1);
+				}
+				if ((*it)->dx < 0)
+				{
+					(*it)->x = p.x + p.w;
+					(*it)->dx *= -1;
+					(*it)->sprite.scale(-1, 1);
+				}
+				if (p.dx < 0) {
+					p.x = (*it)->x + (*it)->w;
+				}
+				if (p.dx > 0) {
+					p.x = (*it)->x - p.w;
+				}
+
+			}
+			if (((*it)->getRect().intersects(p.getRect())) && ((*it)->name == "boss"))
+			{
+				if ((p.dy > 0) && (p.isGravity == false)) {
+					p.dy = -0.2;
+					(*it)->health -= 5;
+					bossHealth -= 5;
+					deathDemon.play();
+					(*it)->shift = 120;
+					(*it)->update(time, shift, level);
+				}
+				else {
+					demon.play();
+					(*it)->shift = 60;
+					p.health -= 25;
+				}
+				if ((*it)->dx > 0)
+				{
+					(*it)->x = p.x - (*it)->w;
+					(*it)->dx *= -1;
+					(*it)->sprite.scale(-1, 1);
+				}
+				if ((*it)->dx < 0)
+				{
+					(*it)->x = p.x + p.w;
+					(*it)->dx *= -1;
+					(*it)->sprite.scale(-1, 1);
+				}
+				if (p.dx < 0) {
+					p.x = (*it)->x + (*it)->w;
+				}
+				if (p.dx > 0) {
+					p.x = (*it)->x - p.w;
+				}
+
+			}
+
+			for (it2 = entities.begin(); it2 != entities.end(); it2++)
+			{
+				if ((*it)->getRect() != (*it2)->getRect())
+					if (((*it)->getRect().intersects((*it2)->getRect())) && ((*it)->name == "easyEnemy") && ((*it2)->name == "MagicPower"))
+					{
+						(*it)->health -= 100;
+						if ((level == 3) || (level == 5)) {
+							dogDeath.play();
+						}
+						else {
+							ghostDeath.play();
+						}
+						(*it)->shift = 120;
+						(*it)->update(time, shift, level);
+						(*it2)->life = false;
+
+					}
+					if (((*it)->getRect().intersects((*it2)->getRect())) && ((*it)->name == "middleEnemy") && ((*it2)->name == "MagicPower"))
+					{
+						(*it)->health -= 50;
+						if ((level == 3) || (level == 5)) {
+							skeletDeath.play();
+						}
+						else {
+							ghostDeath.play();
+						}
+						(*it)->shift = 120;
+						(*it)->update(time, shift, level);
+						(*it2)->life = false;
+					}
+					if (((*it)->getRect().intersects((*it2)->getRect())) && ((*it)->name == "hardEnemy") && ((*it2)->name == "MagicPower"))
+					{
+						(*it)->health -= 25;
+						ghostDeath.play();
+						(*it)->shift = 120;
+						(*it)->update(time, shift, level);
+						(*it2)->life = false;
+
+					}
+					if (((*it)->getRect().intersects((*it2)->getRect())) && ((*it)->name == "boss") && ((*it2)->name == "MagicPower"))
+					{
+						(*it)->health -= 20;
+						bossHealth -= 20;
+						deathDemon.play();
+						if (bossHealth <= 500) {
+							(*it)->shift = 750;
+						}
+						else {
+							(*it)->shift = 0;
+						}
+						(*it)->update(time, shift, level);
+
+					}
+
+			}
+
+
+			if (((*it)->getRect().intersects(p.getRect())) && ((*it)->name == "magicF"))
+			{
+				p.magic += 10;
+				(*it)->life = false;
+				flower.play();
+			}
+			if (((*it)->getRect().intersects(p.getRect())) && ((*it)->name == "healthF"))
+			{
+				p.health += 10;
+				(*it)->life = false;
+				flower.play();
+			}
+			if (((*it)->getRect().intersects(p.getRect())) && ((*it)->name == "powerF"))
+			{
+				p.power += 20;
+				(*it)->life = false;
+				flower.play();
+			}
+			for (it2 = entities.begin(); it2 != entities.end(); it2++)
+			{
+				if ((*it)->getRect() != (*it2)->getRect())
+					if (((*it)->getRect().intersects((*it2)->getRect())) && ((*it)->name == "easyEnemy") && ((*it2)->name == "easyEnemy"))
+					{
+						(*it)->dx *= -1;
+						(*it)->sprite.scale(-1, 1);
+					}
+
+			}
+			if (p.health == 0) { death.play(); }
+			if (Keyboard::isKeyPressed(Keyboard::Up)) { jump.play(); }
+			if (p.power == 100) { win.play(); }
+
 		}
+		lifeBarPlayer.update(p.health, 1.1, 0);
+		magicBarPlayer.update(p.magic, 1.1, 0);
+		if (level == 5) {
+			powerBarPlayer.update(bossHealth, 1.1, 1);
+		}
+		else {
+			powerBarPlayer.update(p.power, 0.92, 0);
+		}
+
+
+	    if ((Keyboard::isKeyPressed(Keyboard::T)) || (p.power == 100) || (bossHealth == 0)) {
+			win.play();
+			if (level == 5) {
+				return loadMenu;
+			}
+			else {
+				lvl.levelNumber++;
+				return next;
+			}
+		}
+		
+		
+		if ((Keyboard::isKeyPressed(Keyboard::Tab)) || (p.health == 0)) { 
+			death.play(); return reload;
+		}
+		if (Keyboard::isKeyPressed(Keyboard::Escape)) { 
+			return ex; 
+		}
+
+		p.CurrentFrame += 0.005 * time;
+		p.update(time, 0, level);
+
+
+
+		for (it = entities.begin(); it != entities.end();)
+		{
+			Entity* b = *it;
+			if (b->name == "easyEnemy") {
+				b->update(time, b->shift, level);
+			}
+			else {
+				b->update(time, 0, level);
+			}
+
+			if (b->life == false) { it = entities.erase(it); delete b; }
+			else it++;
+		}
+		window.setView(view);
+		window.clear(Color(77, 83, 140));
+
+
+		lvl.Draw(window);
+		for (it = entities.begin(); it != entities.end(); it++) {
+			window.draw((*it)->sprite);
+		}
+		lifeBarPlayer.draw(window, 0, p.health + 10, 1.1, 0);
+		magicBarPlayer.draw(window, 40, p.magic + 10, 1.1,0);
+		
+		if (level == 5) {
+			powerBarPlayer.draw(window, 80, bossHealth+10, 1.1,1);
+		}
+		else {
+			powerBarPlayer.draw(window, 80, p.power, 0.92,0);
+		}
+		window.draw(p.sprite);
+		window.display();
+
 	}
-	else
-	{
-		std::cout << "No object layers found..." << std::endl;
-	}
-
-	return true;
 }
-
-Object Level::GetObject(std::string name)
-{
-	// только первый объект с заданным именем
-	for (int i = 0; i < objects.size(); i++)
-		if (objects[i].name == name)
-			return objects[i];
-}
-
-std::vector<Object> Level::GetObjects(std::string name)
-{
-	// все объекты с заданным именем
-	std::vector<Object> vec;
-	for (int i = 0; i < objects.size(); i++)
-		if (objects[i].name == name)
-			vec.push_back(objects[i]);
-
-	return vec;
-}
-
-
-std::vector<Object> Level::GetAllObjects()
-{
-	return objects;
-};
-
-
-sf::Vector2i Level::GetTileSize()
-{
-	return sf::Vector2i(tileWidth, tileHeight);
-}
-
-void Level::Draw(sf::RenderWindow& window)
-{
-	// рисуем все тайлы (объекты не рисуем!)
-	for (int layer = 0; layer < layers.size(); layer++)
-		for (int tile = 0; tile < layers[layer].tiles.size(); tile++)
-			window.draw(layers[layer].tiles[tile]);
-}
-
-#endif

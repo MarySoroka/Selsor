@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="80" height="45" tilewidth="37" tileheight="37" nextobjectid="35">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="80" height="45" tilewidth="37" tileheight="37" nextobjectid="53">
  <tileset firstgid="1" name="homeTiles" tilewidth="37" tileheight="37">
-  <image source="imageMap\homeTiles.png" width="1024" height="1113"/>
+  <image source="imageMap/homeTiles.png" width="1024" height="1113"/>
  </tileset>
  <layer name="Слой тайлов 1" width="80" height="45">
   <data>
@@ -3629,8 +3629,8 @@
   <object id="22" name="movingPlatform" x="1948" y="532" width="246" height="32"/>
   <object id="23" name="solidEnemy" x="132" y="1278" width="26" height="126"/>
   <object id="24" name="solidEnemy" x="2792" y="1272" width="32" height="134"/>
-  <object id="25" name="player" x="2528" y="896" width="84" height="138"/>
-  <object id="26" name="easyEnemy" x="1324" y="1242" width="128" height="166"/>
+  <object id="25" name="player" x="337.091" y="1265.7" width="84" height="138"/>
+  <object id="26" name="boss" x="2169.45" y="1238.97" width="128" height="166"/>
   <object id="27" name="magicF" x="154" y="286" width="18" height="118"/>
   <object id="28" name="magicF" x="142" y="590" width="22" height="112"/>
   <object id="29" name="magicF" x="152" y="874" width="26" height="122"/>
@@ -3639,6 +3639,24 @@
   <object id="32" name="healthF" x="1756" y="236" width="22" height="94"/>
   <object id="33" name="healthF" x="1396" y="226" width="26" height="106"/>
   <object id="34" name="healthF" x="996" y="218" width="30" height="112"/>
+  <object id="35" name="hardEnemy" x="2656" y="573" width="128" height="166"/>
+  <object id="36" name="hardEnemy" x="220" y="237" width="128" height="166"/>
+  <object id="37" name="easyEnemy" x="216" y="545" width="128" height="166"/>
+  <object id="38" name="middleEnemy" x="204" y="833" width="128" height="166"/>
+  <object id="39" name="easyEnemy" x="2680" y="865" width="128" height="166"/>
+  <object id="40" name="middleEnemy" x="2640" y="305" width="128" height="166"/>
+  <object id="41" name="solidEnemy" x="2452" y="909" width="32" height="134"/>
+  <object id="42" name="solidEnemy" x="2904" y="909" width="32" height="134"/>
+  <object id="43" name="solidEnemy" x="2460" y="609" width="32" height="134"/>
+  <object id="44" name="solidEnemy" x="2880" y="605" width="32" height="134"/>
+  <object id="45" name="solidEnemy" x="2893.33" y="343.667" width="32" height="134"/>
+  <object id="46" name="solidEnemy" x="2452" y="345" width="32" height="134"/>
+  <object id="47" name="solidEnemy" x="388" y="281" width="32" height="134"/>
+  <object id="48" name="solidEnemy" x="64" y="269" width="32" height="134"/>
+  <object id="49" name="solidEnemy" x="28" y="577" width="32" height="134"/>
+  <object id="50" name="solidEnemy" x="402" y="565" width="32" height="134"/>
+  <object id="51" name="solidEnemy" x="20" y="865" width="32" height="134"/>
+  <object id="52" name="solidEnemy" x="403" y="866" width="32" height="134"/>
  </objectgroup>
  <layer name="Слой тайлов 2" width="80" height="45">
   <data>
