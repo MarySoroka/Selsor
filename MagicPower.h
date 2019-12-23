@@ -13,7 +13,7 @@ public:
 		w = h = 16;
 		life = true;
 	}
-	void update(float time, int shift, int level)
+	void updateObject(float time, int shift, int level)
 	{
 		if (direction == 0) {
 			dx = -speed;

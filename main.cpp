@@ -22,9 +22,9 @@ void gameRunning(RenderWindow& window, int& level) {
 
 
 int main(){
-	int currentLevel = 1;
-	bool play = true;
+	
 	while (menu()) {
+		int currentLevel = 1;
 		RenderWindow window(VideoMode(1376, 768), "SELSOR");
 		gameRunning(window, currentLevel);
 	}

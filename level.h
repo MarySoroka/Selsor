@@ -193,8 +193,8 @@ enum stateOfGame downloadLevel(RenderWindow& window, int& level) {
 		hardEnemyImage.loadFromFile("images/enemies/swampGhost/ghost.png");
 		bossImage.loadFromFile("images/enemies/demon/demon.png");
 		movePlatformImage.loadFromFile("images/platform/MovingPlatform3.png");
-		Henemy = 140;
-		wEnemy = 150;
+		Henemy = 20;
+		wEnemy = 40;
 		music.openFromFile("sound/final.ogg");
 		music.play();
 		break;
@@ -231,14 +231,14 @@ enum stateOfGame downloadLevel(RenderWindow& window, int& level) {
 	if ((level == 4)||(level == 5)) {
 		e = lvl.GetObjects("hardEnemy");
 		for (int i = 0; i < e.size(); i++) {
-			entities.push_back(new Enemy(hardEnemyImage, "hardEnemy", lvl, e[i].rect.left, e[i].rect.top, wEnemy, Henemy));
+			entities.push_back(new Enemy(hardEnemyImage, "hardEnemy", lvl, e[i].rect.left, e[i].rect.top, 40, 20));
 			e[i].rect.left;
 			e[i].rect.top;
 		}
 	}
 	if (level == 5) {
 		e = lvl.GetObjects("boss");
-		entities.push_back(new Enemy(bossImage, "boss", lvl, e[0].rect.left, e[0].rect.top, wEnemy, Henemy));
+		entities.push_back(new Enemy(bossImage, "boss", lvl, e[0].rect.left, e[0].rect.top, 140, 150));
 	}
 	int bossHealth = 3000;
 
@@ -270,11 +270,9 @@ enum stateOfGame downloadLevel(RenderWindow& window, int& level) {
 		{
 			if (event.type == sf::Event::Closed) {
 				window.close();
-
 			}
 			if (p.magic != 0)
 			{
-
 				if (p.isShoot == true) {
 					p.isShoot = false;
 					entities.push_back(new  MagicPower(MagicPowerImage, "MagicPower", lvl, p.x, p.y, 16, 16, p.state));
@@ -316,7 +314,7 @@ enum stateOfGame downloadLevel(RenderWindow& window, int& level) {
 							(*it)->shift = 120;
 						}
 					}
-					(*it)->update(time, shift, level);
+					(*it)->updateObject(time, shift, level);
 
 				}
 				else {
@@ -362,10 +360,10 @@ enum stateOfGame downloadLevel(RenderWindow& window, int& level) {
 					}
 					else {
 						ghostDeath.play();
-						(*it)->shift = 120;
+						(*it)->shift = 80;
 					}
 					
-					(*it)->update(time, shift, level);
+					(*it)->updateObject(time, shift, level);
 
 				}
 				else {
@@ -400,7 +398,7 @@ enum stateOfGame downloadLevel(RenderWindow& window, int& level) {
 					(*it)->health -= 10;
 					ghostDeath.play();
 					(*it)->shift = 120;
-					(*it)->update(time, shift, level);
+					(*it)->updateObject(time, shift, level);
 
 				}
 				else {
@@ -433,10 +431,10 @@ enum stateOfGame downloadLevel(RenderWindow& window, int& level) {
 				if ((p.dy > 0) && (p.isGravity == false)) {
 					p.dy = -0.2;
 					(*it)->health -= 5;
-					bossHealth -= 5;
+					bossHealth -= 50;
 					deathDemon.play();
 					(*it)->shift = 120;
-					(*it)->update(time, shift, level);
+					(*it)->updateObject(time, shift, level);
 				}
 				else {
 					demon.play();
@@ -477,7 +475,7 @@ enum stateOfGame downloadLevel(RenderWindow& window, int& level) {
 							ghostDeath.play();
 						}
 						(*it)->shift = 120;
-						(*it)->update(time, shift, level);
+						(*it)->updateObject(time, shift, level);
 						(*it2)->life = false;
 
 					}
@@ -491,7 +489,7 @@ enum stateOfGame downloadLevel(RenderWindow& window, int& level) {
 							ghostDeath.play();
 						}
 						(*it)->shift = 120;
-						(*it)->update(time, shift, level);
+						(*it)->updateObject(time, shift, level);
 						(*it2)->life = false;
 					}
 					if (((*it)->getRect().intersects((*it2)->getRect())) && ((*it)->name == "hardEnemy") && ((*it2)->name == "MagicPower"))
@@ -499,22 +497,17 @@ enum stateOfGame downloadLevel(RenderWindow& window, int& level) {
 						(*it)->health -= 25;
 						ghostDeath.play();
 						(*it)->shift = 120;
-						(*it)->update(time, shift, level);
+						(*it)->updateObject(time, shift, level);
 						(*it2)->life = false;
 
 					}
 					if (((*it)->getRect().intersects((*it2)->getRect())) && ((*it)->name == "boss") && ((*it2)->name == "MagicPower"))
 					{
 						(*it)->health -= 20;
-						bossHealth -= 20;
+						bossHealth -= 50;
 						deathDemon.play();
-						if (bossHealth <= 500) {
-							(*it)->shift = 750;
-						}
-						else {
-							(*it)->shift = 0;
-						}
-						(*it)->update(time, shift, level);
+						(*it)->shift = 1032;
+						(*it)->updateObject(time, shift, level);
 
 					}
 
@@ -539,32 +532,22 @@ enum stateOfGame downloadLevel(RenderWindow& window, int& level) {
 				(*it)->life = false;
 				flower.play();
 			}
-			for (it2 = entities.begin(); it2 != entities.end(); it2++)
-			{
-				if ((*it)->getRect() != (*it2)->getRect())
-					if (((*it)->getRect().intersects((*it2)->getRect())) && ((*it)->name == "easyEnemy") && ((*it2)->name == "easyEnemy"))
-					{
-						(*it)->dx *= -1;
-						(*it)->sprite.scale(-1, 1);
-					}
-
-			}
 			if (p.health == 0) { death.play(); }
 			if (Keyboard::isKeyPressed(Keyboard::Up)) { jump.play(); }
 			if (p.power == 100) { win.play(); }
 
 		}
-		lifeBarPlayer.update(p.health, 1.1, 0);
-		magicBarPlayer.update(p.magic, 1.1, 0);
+		lifeBarPlayer.updateBar(p.health, 1.1, 0);
+		magicBarPlayer.updateBar(p.magic, 1.1, 0);
 		if (level == 5) {
-			powerBarPlayer.update(bossHealth, 1.1, 1);
+			powerBarPlayer.updateBar(bossHealth, 1.1, 1);
 		}
 		else {
-			powerBarPlayer.update(p.power, 0.92, 0);
+			powerBarPlayer.updateBar(p.power, 0.92, 0);
 		}
 
 
-	    if ((Keyboard::isKeyPressed(Keyboard::T)) || (p.power == 100) || (bossHealth == 0)) {
+	    if ((Keyboard::isKeyPressed(Keyboard::T)) || (p.power == 100) || (bossHealth <= 0)) {
 			win.play();
 			if (level == 5) {
 				return loadMenu;
@@ -584,7 +567,7 @@ enum stateOfGame downloadLevel(RenderWindow& window, int& level) {
 		}
 
 		p.CurrentFrame += 0.005 * time;
-		p.update(time, 0, level);
+		p.updateObject(time, 0, level);
 
 
 
@@ -592,10 +575,10 @@ enum stateOfGame downloadLevel(RenderWindow& window, int& level) {
 		{
 			Entity* b = *it;
 			if (b->name == "easyEnemy") {
-				b->update(time, b->shift, level);
+				b->updateObject(time, b->shift, level);
 			}
 			else {
-				b->update(time, 0, level);
+				b->updateObject(time, 0, level);
 			}
 
 			if (b->life == false) { it = entities.erase(it); delete b; }

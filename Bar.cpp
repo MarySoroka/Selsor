@@ -10,18 +10,18 @@ Bar::Bar(String name, float h, float w)
 	s.setTexture(t);
 	s.setTextureRect(IntRect(0, 0, w, h));
 	s.setScale(0.25f, 0.25f);
-	bar.setFillColor(Color(0, 0, 0));//черный прямоугольник накладывается сверху и появляется эффект отсутствия здоровья
+	bar.setFillColor(Color(0, 0, 0));
 	max = 100;
 }
 
-void Bar::update(int k, float type, int shiftBar)// k-текущее здоровье
+void Bar::updateBar(int k, float type, int shiftBar)
 {
 	if (shiftBar == 1) {
 		k /= 30;
 	}
 	if ((k >= 0) && (k < max))
 	{
-		bar.setSize(Vector2f((max - k) * type, 20));//если не отрицательно и при этом меньше максимума, то устанавливаем новое значение (новый размер) для черного прямоугольника
+		bar.setSize(Vector2f((max - k) * type, 20));
 
 	}
 }
@@ -40,9 +40,9 @@ void Bar::draw(RenderWindow& window, int shift,int k, float type, float typeOfPo
 	}
 	
 	if ((k >= 0) && (k <= max)) {
-			s.setPosition(center.x - size.x / 2 + 10, center.y - size.y / 2 + 10 + shift);//позиция на экране
+			s.setPosition(center.x - size.x / 2 + 10, center.y - size.y / 2 + 10 + shift);
 			bar.setPosition(center.x - size.x / 2 + (90 - ((50 - k) * type))-l, center.y - size.y / 2 + 25 + shift);
 	}
-	window.draw(s);//сначала рисуем полоску здоровья
-	window.draw(bar);//поверх неё уже черный прямоугольник, он как бы покрывает её
+	window.draw(s);
+	window.draw(bar);
 }

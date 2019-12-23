@@ -25250,35 +25250,35 @@
   <object id="23" name="solid" x="2" y="-2" width="158" height="1656"/>
   <object id="24" name="solid" x="2824" y="0" width="132" height="1662"/>
   <object id="25" name="solid" x="2" y="0" width="2948" height="172"/>
-  <object id="26" name="player" x="1566" y="1182" width="100" height="176"/>
+  <object id="26" name="player" x="1653.88" y="1294.12" width="57.5758" height="60.8485"/>
   <object id="27" name="solidEnemy" x="214" y="528" width="26" height="88"/>
   <object id="28" name="solidEnemy" x="648" y="540" width="14" height="72"/>
   <object id="29" name="solidEnemy" x="2086" y="1404" width="30" height="126"/>
   <object id="30" name="solidEnemy" x="2780" y="1404" width="36" height="126"/>
-  <object id="31" name="middleEnemy" x="2168" y="1384" width="92" height="148"/>
+  <object id="31" name="middleEnemy" x="2264.97" y="1474.91" width="55.6364" height="51.0303"/>
   <object id="32" name="powerF" x="272" y="484" width="18" height="134"/>
-  <object id="33" name="middleEnemy" x="414" y="504" width="38" height="106"/>
+  <object id="33" name="middleEnemy" x="410.97" y="561.576" width="44.0606" height="45.3939"/>
   <object id="34" name="powerF" x="2650" y="290" width="22" height="86"/>
   <object id="35" name="movingPlatform" x="1088" y="516" width="202" height="30"/>
   <object id="36" name="movingPlatform" x="1790" y="412" width="212" height="38"/>
   <object id="38" name="solidEnemy" x="162" y="1398" width="38" height="130"/>
   <object id="39" name="solidEnemy" x="1408" y="1404" width="32" height="126"/>
   <object id="40" name="powerF" x="266" y="1392" width="18" height="134"/>
-  <object id="41" name="easyEnemy" x="510" y="1396" width="64" height="134"/>
+  <object id="41" name="easyEnemy" x="503.939" y="1483.88" width="48.8485" height="52.1818"/>
   <object id="42" name="powerF" x="2674" y="746" width="18" height="96"/>
   <object id="44" name="powerF" x="2342" y="1010" width="12" height="116"/>
   <object id="45" name="magicF" x="736" y="956" width="18" height="106"/>
   <object id="46" name="healthF" x="716" y="544" width="24" height="94"/>
   <object id="47" name="solidEnemy" x="1084" y="953" width="32" height="126"/>
   <object id="48" name="solidEnemy" x="692" y="935" width="32" height="126"/>
-  <object id="49" name="middleEnemy" x="864" y="912" width="92" height="148"/>
+  <object id="49" name="middleEnemy" x="876.121" y="1002.91" width="34.4242" height="54.0606"/>
   <object id="50" name="solidEnemy" x="1318" y="597" width="32" height="126"/>
   <object id="51" name="solidEnemy" x="1712" y="619" width="32" height="126"/>
-  <object id="52" name="easyEnemy" x="1504" y="593" width="64" height="134"/>
-  <object id="53" name="hardEnemy" x="2711.58" y="689.636" width="92" height="148"/>
+  <object id="52" name="easyEnemy" x="1516.12" y="665.727" width="39.7576" height="55.2121"/>
+  <object id="53" name="hardEnemy" x="2732.79" y="795.697" width="52.6061" height="38.9091"/>
   <object id="54" name="solidEnemy" x="2520.39" y="698.636" width="38" height="130"/>
   <object id="55" name="solidEnemy" x="2883.42" y="723.848" width="38" height="130"/>
-  <object id="57" name="hardEnemy" x="2138" y="954" width="92" height="148"/>
+  <object id="57" name="hardEnemy" x="2150.12" y="1041.88" width="46.5455" height="54.0606"/>
   <object id="58" name="solidEnemy" x="2353" y="995" width="38" height="130"/>
   <object id="59" name="solidEnemy" x="1965" y="967" width="38" height="130"/>
   <object id="60" name="movingPlatform" x="1279" y="1151" width="202" height="30"/>

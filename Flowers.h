@@ -8,7 +8,7 @@ public:
 		sprite.setScale(0.5f, 0.5f);
 	}
 
-	void update(float time, int shift, int level)
+	void updateObject(float time, int shift, int level)
 	{
 		if (health <= 0) { life = false; }
 	}
@@ -20,7 +20,7 @@ public:
 		sprite.setPosition(x + w / 2, y + h / 2 + 20);
 
 	};
-	void update(float time, int shift, int level) { if (health <= 0) { life = false; } };
+	void updateObject(float time, int shift, int level) { if (health <= 0) { life = false; } };
 };
 class healthFlowers :public Entity {
 public:
@@ -29,5 +29,5 @@ public:
 		sprite.setPosition(x + w / 2, y + h / 2);
 		sprite.setScale(0.7f, 0.7f);
 	};
-	void update(float time, int shift, int level) { if (health <= 0) { life = false; } };
+	void updateObject(float time, int shift, int level) { if (health <= 0) { life = false; } };
 };

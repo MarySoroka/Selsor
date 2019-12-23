@@ -65,7 +65,7 @@ public:
 
 		}
 	};
-	void checkCollisionWithMap(float Dx, float Dy)
+	void checkingMap(float Dx, float Dy)
 	{
 		for (int i = 0; i < obj.size(); i++)
 			if (getRect().intersects(obj[i].rect))
@@ -92,7 +92,7 @@ public:
 				}
 			}
 	}
-	void update(float time, int shift, int level)
+	void updateObject(float time, int shift, int level)
 	{
 		control(time);
 		switch (state)
@@ -104,9 +104,9 @@ public:
 		case stay: break;
 		}
 		x += dx * time;
-		checkCollisionWithMap(dx, 0);
+		checkingMap(dx, 0);
 		y += dy * time;
-		checkCollisionWithMap(0, dy);
+		checkingMap(0, dy);
 		sprite.setPosition(x + w / 2, y + h / 2);
 		if (health <= 0) { life = false; }
 		if (!isMove) { speed = 0; }
@@ -115,8 +115,8 @@ public:
 			case 1: setPlayerCoordinateForView(x, y); break;
 			case 2: setPlayerCoordinateForView2(x, y); break;
 			case 3: setPlayerCoordinateForView3(x, y); break;
-			case 4: setPlayerCoordinateForView3(x, y); break;
-			case 5: setPlayerCoordinateForView3(x, y); break;
+			case 4: setPlayerCoordinateForView4(x, y); break;
+			case 5: setPlayerCoordinateForView5(x, y); break;
 			}
 		}
 		dy = dy + 0.0015 * time;

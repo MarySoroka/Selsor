@@ -31,6 +31,6 @@ public:
 	FloatRect getRect() {
 		return FloatRect(x, y, w, h);
 	}
-	virtual void update(float time, int shift, int level) = 0;
+	virtual void updateObject(float time, int shift, int level) = 0;
 };
 #endif

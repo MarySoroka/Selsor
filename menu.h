@@ -13,7 +13,7 @@ bool menu() {
 	menuTexture1.loadFromFile("images/menu/newGame.png");
 	menuTexture2.loadFromFile("images/menu/aboutGame.png");
 	menuTexture3.loadFromFile("images/menu/exit.png");
-	aboutTexture.loadFromFile("images/menu/about.jpg");
+	aboutTexture.loadFromFile("images/menu/about1.jpg");
 	menuBackground.loadFromFile("images/menu/backgr.png");
 	Sprite menu1(menuTexture1), menu2(menuTexture2), menu3(menuTexture3), about(aboutTexture), menuBg(menuBackground);
 	bool isMenu = 1;

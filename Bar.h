@@ -19,7 +19,7 @@ public:
 	float h, w;
 	int shift;
 	Bar(String name, float h, float w);
-	void update(int k,float type, int shiftBar);
+	void updateBar(int k,float type, int shiftBar);
 	void draw(RenderWindow& window, int shift, int k, float type, float typeOfPower);
 
 };

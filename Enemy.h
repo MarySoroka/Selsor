@@ -30,7 +30,7 @@ public:
 			health = 3000;
 		}
 	}
-	void checkCollisionWithMap(float time, float Dx, float Dy)
+	void checkingMap(float time, float Dx, float Dy)
 	{
 		for (int i = 0; i < obj.size(); i++) {
 			if (getRect().intersects(obj[i].rect))
@@ -47,12 +47,12 @@ public:
 	}
 
 
-	void update(float time, int shift, int level)
+	void updateObject(float time, int shift, int level)
 	{
 		CurrentFrame += 0.005 * time;
 		if (name == "easyEnemy") {
 
-			checkCollisionWithMap(time, dx, 0);
+			checkingMap(time, dx, 0);
 
 			switch (level) {
 			case 1: {
@@ -79,7 +79,7 @@ public:
 				if (CurrentFrame > 4) {
 					CurrentFrame -= 4;
 				}
-				sprite.setTextureRect(IntRect(64 * int(CurrentFrame), 20 + shift, 64, 60 + shift)); break; }
+				sprite.setTextureRect(IntRect(60 * int(CurrentFrame), 0 + shift, 65, 32 + shift)); break; }
 
 			}
 			sprite.move(-0.1 * time, 0);
@@ -88,7 +88,7 @@ public:
 			if (health <= 0) { life = false; }
 		}
 		if (name == "middleEnemy") {
-			checkCollisionWithMap(time, dx, 0);
+			checkingMap(time, dx, 0);
 			switch (level) {
 			case 3: {
 				if (CurrentFrame > 4) {
@@ -97,11 +97,17 @@ public:
 				sprite.setTextureRect(IntRect(21 * int(CurrentFrame), 0, 21, 33)); break;
 			}
 			case 4: {
+				if (health <= 50) {
+					shift = 80;
+				}
 				if (CurrentFrame > 3) {
 					CurrentFrame -= 2;
 				}
 				sprite.setTextureRect(IntRect(80 * int(CurrentFrame), 10+ shift, 80, 80+shift)); break; }
 			case 5: {
+				if (health <= 50) {
+					shift = 80;
+				}
 				if (CurrentFrame > 3) {
 					CurrentFrame -= 2;
 				}
@@ -114,26 +120,47 @@ public:
 			if (health <= 0) { life = false; }
 		}
 		if (name == "hardEnemy") {
-			checkCollisionWithMap(time, dx, 0);
-			if (CurrentFrame > 3) {
-				CurrentFrame -= 2;
+			checkingMap(time, dx, 0);
+			if (level == 5) {
+				if (CurrentFrame > 4) {
+					CurrentFrame -= 4;
+				}
+				sprite.setTextureRect(IntRect(64 * int(CurrentFrame), 20 + shift, 64, 60 + shift));
 			}
-			sprite.setTextureRect(IntRect(80 * int(CurrentFrame), 10+shift, 80, 80+shift)); 
+			else {
+				if (health <= 50) {
+					shift = 80;
+				}
+				if (CurrentFrame > 3) {
+					CurrentFrame -= 3;
+				}
+				sprite.setTextureRect(IntRect(80 * int(CurrentFrame), 10 + shift, 80, 80 + shift));
+			}
 			sprite.move(-0.1 * time, 0);
 			x += dx * time;
 			sprite.setPosition(x + w / 2, y + h / 2);
 			if (health <= 0) { life = false; }
 		}
 		if (name == "boss") {
-			checkCollisionWithMap(time, dx, 0);
+			checkingMap(time, dx, 0);
 			if (CurrentFrame > 4) {
-				CurrentFrame -= 3;
+				CurrentFrame -= 4;
 			}
-			sprite.setTextureRect(IntRect((160 * int(CurrentFrame))+shift, 0, 160 + shift, 140));
+			int width = 0;
+			if (health <= 1000) {
+				width = 230;
+				shift = 1032;
+			}
+			else {
+				width = 160;
+			}
+			sprite.setTextureRect(IntRect((width * int(CurrentFrame))+shift, 0, width, 160));
 			sprite.move(-0.1 * time, 0);
 			x += dx * time;
 			sprite.setPosition(x + w / 2, y + h / 2);
-			if (health <= 0) { life = false; }
+			if (health <= 0) { 
+				life = false;
+			}
 		}
 	}
 };

@@ -7,7 +7,7 @@ public:
 		dx = 0.08;
 	}
 
-	void update(float time, int shift, int level)
+	void updateObject(float time, int shift, int level)
 	{
 		x += dx * time;
 		moveTimer += time;
